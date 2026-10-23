@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
- * The extraction must stay a general watch analytics engine.
+ * The engine must stay a general watch analytics engine.
  *
  * These assertions are deliberately about coupling, not features. The engine
  * is allowed to know about media events; it is not allowed to know about a

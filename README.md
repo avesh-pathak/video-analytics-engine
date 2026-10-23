@@ -5,8 +5,8 @@
 This is a **general watch analytics engine**. It has no player integration, no
 player-provider SDK, and no playback-token layer. It ingests evidence from any source that
 can emit standard media events, and it never fetches media, catalog data, or provider
-metadata. The source product's hosted player was deliberately left out of the extraction;
-what remains is the measurement engine itself.
+metadata. Playback stays outside the boundary on purpose: the engine only decides what the
+events it receives are worth.
 
 The client is untrusted, so watched seconds are never taken from the client's word — they
 are recomputed server-side from the intervals the client claims, against a policy the
@@ -14,14 +14,6 @@ client cannot influence. Delivery is at-least-once, so ingest is idempotent at t
 independent levels. Reads are served from a materialized projection over an append-only
 evidence log, and because a projection can drift, the drift is measurable, repairable in
 bounded resumable pages, and verifiable afterwards.
-
-> This project was extracted from a production video platform where it had been
-> hardened across four numbered phases of schema migration and a long repair history.
-> The extraction kept the algorithms, the policies, the SQL contracts and the failure
-> semantics, and dropped the product surface around them.
->
-> Every diagram below is an **image**, not a link — the diagram sources live in
-> `scripts/render-diagrams.mjs`, and `node scripts/render-diagrams.mjs` re-renders them.
 
 ---
 
@@ -41,7 +33,6 @@ bounded resumable pages, and verifiable afterwards.
 - [12 · API reference](#12--api-reference)
 - [13 · Verifying it](#13--verifying-it)
 - [14 · What must not regress](#14--what-must-not-regress)
-- [15 · Origins](#15--origins)
 
 ---
 
@@ -351,9 +342,10 @@ The tracker is **player-agnostic**. It consumes ten standard media callbacks —
 SDK, embeds no iframe, and fetches no provider data. Any source that can surface those
 events can feed it; the engine does not know or care which player produced them.
 
-The source product's hosted player and its playback check were deliberately dropped in the
-extraction. What survives is the event contract and the segment machine, not an adapter to
-a particular vendor.
+The contract between player and tracker is those ten events, nothing more. A native
+`<video>` element satisfies it directly; a custom or third-party player satisfies it by
+re-emitting the same callbacks. That is the whole adapter surface, so there is no vendor to
+pin and nothing to rewrite when the player changes.
 
 ![The client segment machine — the ten player events and where a segment closes](docs/diagrams/04-client-segment-machine.png)
 
@@ -539,9 +531,10 @@ video-eng/
 │  ├─ read/route.ts              The analytics surface
 │  └─ admin/route.ts             audit · repair · rebuild · broker stats · seek
 │
-├─ docs/diagrams/                     The diagram images pasted into this README
+├─ docs/diagrams/                     The generated diagram images used above
 ├─ scripts/render-diagrams.mjs        Diagram sources + the headless-Chrome renderer
 ├─ tests/                            Unit tests for the math, projection and repair engine
+├─ next.config.ts                    Security headers and CSP, including media-src for local video
 └─ README.md                         This document
 ```
 
@@ -565,16 +558,14 @@ idempotent DDL script.
 ```bash
 npm run db:reset     # delete .data/analytics.db and start clean
 npm test             # vitest
-node scripts/render-diagrams.mjs   # re-render the diagram PNGs pasted above
+node scripts/render-diagrams.mjs   # re-render the images in docs/diagrams
 ```
 
 ### How the diagrams are made
 
-The four diagrams are the source of truth for this README's visuals, so they are kept as
-data in `scripts/render-diagrams.mjs` and rendered to `docs/diagrams/*.png` with headless
-Chrome. Edit the mermaid source there, run the script, and paste the fresh PNG back into
-the section it belongs to — the README never embeds a generated page, only the diagram
-image itself.
+The four diagrams are generated from mermaid sources kept in
+`scripts/render-diagrams.mjs` and rendered to `docs/diagrams/*.png` with headless Chrome.
+Edit the source there and re-run the script; the images are rewritten in place.
 
 ### Why no migrations folder
 
@@ -698,8 +689,8 @@ discrepancy is visible without reaching for an admin tool.
 
 ## 13 · Verifying it
 
-There is no player UI in this extraction. The engine is exercised through the API and the
-test suite, and the failure modes are still demonstrable.
+The engine deliberately ships without a player UI. It is exercised through the API and the
+test suite, and every failure mode is still demonstrable.
 
 ### The test suite
 
@@ -760,32 +751,6 @@ mechanism is removed.
   evidence destroys the ability to explain a number.
 - **Do not add player-provider coupling.** No player SDK, iframe embed, or provider API
   call belongs in the measurement path. The engine takes events, not media.
-
----
-
-## 15 · Origins
-
-This engine was extracted from a production video platform, where it had been hardened by
-four numbered phases of schema migration and a long repair history. The extraction mapped
-that logic onto framework-free modules here; the origin is recorded because it explains the
-shape of the design, not because the old paths still exist.
-
-| Piece | Current path | What it contributes |
-|---|---|---|
-| The watch math | `engine/watch-math.ts` | Union-of-ranges unique time, plain-sum total, per-segment wall clock |
-| Every bound | `engine/policy.ts` | One source of truth, imported by both the client machine and the server |
-| Segment validation | `engine/sanitize.ts` | The twelve bounds, and the permanent/retryable split |
-| Request idempotency | `engine/idempotency.ts` | 60 s TTL claim, released on write failure so genuine retries survive |
-| The segment machine | `engine/segment-machine.ts` | Segment boundaries, plausibility detection, chunking, terminal-session recovery |
-| The durable outbox | `engine/outbox.ts` | IndexedDB primary, coalesced localStorage mirror, bounded capacity, age pruning |
-| Segment dedup index | `server/schema.ts` | The session-independent partial unique index and the generated scope column |
-| Atomic heartbeat | `server/repository.ts` + `app/api/analytics/heartbeat/route.ts` | Validate, lock, dedup, upsert the projection, write the event — one transaction |
-| The repair engine | `engine/reconcile.ts` + `app/api/analytics/admin/route.ts` | Audit, dry-run, keyset-paged apply with per-subject savepoints, verify |
-| Security headers & CSP | `next.config.ts` | Including `media-src 'self' blob:` for a source that serves local media |
-
-The source product's hosted player and its playback check were **not** ported. The
-extraction kept the event contract and the measurement algorithms; it did not keep a
-player adapter, a provider SDK, or any code that pulls media or catalog data from a vendor.
 
 ---
 

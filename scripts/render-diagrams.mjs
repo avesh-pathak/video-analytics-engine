@@ -2,9 +2,9 @@
 /**
  * The diagram sources, and the renderer that turns them into PNGs.
  *
- * The four diagrams in this file are the source of truth for the README's
- * visuals. Each is rendered to `docs/diagrams/<name>.png` with headless
- * Chrome, and the README pastes the resulting image — never a rendered page.
+ * The four diagrams are defined here as mermaid source. Each is rendered to
+ * `docs/diagrams/<name>.png` with headless Chrome, so the images in the README
+ * come from this file rather than from a screenshot.
  *
  * Usage: node scripts/render-diagrams.mjs
  */
