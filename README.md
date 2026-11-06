@@ -438,6 +438,12 @@ lets the read and write paths be deployed, tuned and failed independently.
 | **dead letter** | A repeatedly-failing record is moved aside | One poison message cannot stall the pipeline |
 | **replay** | A group's committed offset can be rewound | Turns "rebuildable" from a claim into a demonstration |
 
+> **Topic, partition, subqueue.** `video.segments` is the topic; each partition is an
+> ordered *subqueue* inside it. The publisher hashes the subject scope to choose one, so
+> ordering is guaranteed within a subject's subqueue, not across the topic. The
+> `va-projector` consumer group owns those subqueues, commits offsets, reports lag, moves
+> a poison record to the dead-letter queue, and can rewind an offset to replay the log.
+
 Two implementations satisfy the same `Broker` interface:
 
 - **`MemoryBroker`** (default) — in-process, zero infrastructure. Not a mock: it
@@ -501,46 +507,52 @@ own metrics.
 
 ---
 
-## 10 · Project layout
+## 10 - Project layout
 
 ```
-video-eng/
-├─ engine/                       ← framework-free core. Zero Next.js imports. 100% unit-testable.
-│  ├─ watch-math.ts              The four metrics, union-of-ranges, coverage bitmap
-│  ├─ policy.ts                  Every numeric bound, in one place
-│  ├─ sanitize.ts                The twelve validation bounds; permanent vs retryable
-│  ├─ segment-machine.ts         The client segment state machine
-│  ├─ outbox.ts                  IndexedDB + coalesced localStorage mirror
-│  ├─ idempotency.ts             Request claim, subject scope, dedup winner selection
-│  ├─ projection.ts              Incremental apply, authoritative recompute, drift compare
-│  ├─ reconcile.ts               Audit → dry-run → bounded apply → verify
-│  └─ broker/
-│     ├─ types.ts                The Broker interface
-│     ├─ memory.ts               In-process broker with real Kafka semantics
-│     └─ kafka.ts                Apache Kafka adapter (kafkajs)
-│
-├─ server/                       ← storage and orchestration
-│  ├─ db.ts                      node:sqlite singleton, WAL, busy_timeout, transactions
-│  ├─ schema.ts                  Idempotent DDL applied at boot — no migrations folder
-│  ├─ repository.ts              Every storage operation, and the dedup insert
-│  └─ broker.ts                  Broker selection + the outbox relay
-│
-├─ app/api/analytics/
-│  ├─ session/route.ts           POST open · PUT finalize
-│  ├─ heartbeat/route.ts         The hot path
-│  ├─ read/route.ts              The analytics surface
-│  └─ admin/route.ts             audit · repair · rebuild · broker stats · seek
-│
-├─ docs/diagrams/                     The generated diagram images used above
-├─ scripts/render-diagrams.mjs        Diagram sources + the headless-Chrome renderer
-├─ tests/                            Unit tests for the math, projection and repair engine
-├─ next.config.ts                    Security headers and CSP, including media-src for local video
-└─ README.md                         This document
+video-analytics-engine/
+|-- web/                         Next.js presentation app (UI only)
+|   |-- app/                     Pages, metadata and API route handlers
+|   |-- components/              Marketing, architecture and shadcn UI
+|   |-- lib/                     Site config and deterministic demo data
+|   |-- public/                  Fonts, favicon, Open Graph images
+|   |-- design/                  DESIGN.md, reference HTML, logo, theme notes
+|   |-- next.config.ts           Security headers, CSP and tracing root
+|   |-- postcss.config.mjs       Tailwind v4
+|   `-- tsconfig.json
+|
+|-- engine/                      Framework-free core. Zero Next.js imports.
+|   |-- watch-math.ts            The four metrics, union of ranges
+|   |-- policy.ts                Every numeric bound, in one place
+|   |-- sanitize.ts              Validation bounds; permanent vs retryable
+|   |-- segment-machine.ts       Client segment state machine
+|   |-- outbox.ts                IndexedDB + coalesced localStorage mirror
+|   |-- idempotency.ts           Request claim and dedup winner selection
+|   |-- projection.ts            Incremental apply, recompute, drift compare
+|   |-- reconcile.ts             Audit -> dry-run -> bounded apply -> verify
+|   `-- broker/                  types.ts, memory.ts, kafka.ts
+|
+|-- server/                      SQLite storage and orchestration
+|   |-- db.ts                    node:sqlite singleton, WAL, transactions
+|   |-- schema.ts                Idempotent DDL applied at boot
+|   |-- repository.ts            Storage operations and dedup insert
+|   `-- broker.ts                Broker selection + transactional outbox relay
+|
+|-- docs/diagrams/               Generated architecture diagrams
+|-- scripts/render-diagrams.mjs  Diagram sources + headless-Chrome renderer
+|-- tests/                       Math, projection and repair tests
+|-- package.json                 Root scripts delegate to web/
+`-- README.md
 ```
 
-> **`engine/` is a separate folder on purpose.** It has no framework imports and is fully
-> unit-testable. That separation is what makes it read as *"a system I designed"* rather
-> than *"route handlers I wrote"*.
+> **Web and data are deliberately separate.** `web/` holds the presentation
+> layer and the deterministic UI data. `engine/`, `server/`, `tests/`, `docs/` and
+> the broker adapters stay at the repository root. The route handlers in
+> `web/app/api/analytics/` are the only bridge between the two.
+
+> **`engine/` is a separate folder on purpose.** It has no framework imports and is
+> fully unit-testable. That separation is what makes it read as *"a system I designed"*
+> rather than *"route handlers I wrote"*.
 
 ---
 

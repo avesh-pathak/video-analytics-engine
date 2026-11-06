@@ -36,9 +36,21 @@ coverage/
 .vscode/
 .idea/
 
+# Tests are kept locally only.
+/tests/
+
+# Agent instruction files are generated locally and not committed.
+AGENTS.md
+CLAUDE.md
+
 # OS metadata
 .DS_Store
 Thumbs.db
 
 # Local-only artifacts. Kept on disk, not part of the project.
 HTML/
+
+# Next preview build output
+.next-preview/
+
+
