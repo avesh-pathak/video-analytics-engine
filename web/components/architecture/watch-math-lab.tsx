@@ -8,10 +8,10 @@ import { cn } from "@/lib/utils";
 const duration = 40;
 
 const rangeOptions = [
-  { id: "a", label: "Range A", note: null, from: 0, to: 10, color: "var(--chart-1)" },
-  { id: "b", label: "Range B", note: "rewatch", from: 8, to: 20, color: "var(--chart-2)" },
-  { id: "c", label: "Range C", note: null, from: 12, to: 25, color: "var(--chart-3)" },
-  { id: "d", label: "Range D", note: null, from: 30, to: 36, color: "var(--chart-4)" },
+  { id: "a", label: "Range A", from: 0, to: 10, color: "var(--chart-1)" },
+  { id: "b", label: "Range B", from: 8, to: 20, color: "var(--chart-2)" },
+  { id: "c", label: "Range C", from: 12, to: 25, color: "var(--chart-3)" },
+  { id: "d", label: "Range D", from: 30, to: 36, color: "var(--chart-4)" },
 ];
 
 function mergeRanges(ranges: { from: number; to: number }[]) {
@@ -51,13 +51,13 @@ export function WatchMathLab() {
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-line bg-card text-card-foreground">
+    <div className="min-w-0 overflow-hidden rounded-2xl border border-line bg-card text-card-foreground">
       <div className="flex items-start justify-between gap-4 px-5 pb-3 pt-5">
         <div className="min-w-0">
-          <h3 className="text-base font-medium tracking-[-0.02em] text-ink">
-            Explore the union
+          <h3 className="text-lg font-medium tracking-[-0.02em] text-ink">
+            See how watch time adds up
           </h3>
-          <p className="mt-1 text-[12px] leading-5 text-muted-ink">
+          <p className="mt-1 text-sm leading-6 text-muted-ink">
             Toggle ranges from a 40-second watch.
           </p>
         </div>
@@ -66,9 +66,9 @@ export function WatchMathLab() {
           onClick={() => setSelected(new Set(rangeOptions.map((range) => range.id)))}
           disabled={allSelected}
           aria-label="Reset all ranges"
-          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-muted-ink transition-colors hover:bg-surface hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-muted-ink"
+          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-lg px-2 text-sm font-medium text-muted-ink transition-colors hover:bg-surface hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-muted-ink"
         >
-          <RotateCcw className="size-3" />
+          <RotateCcw className="size-3.5" />
           Reset
         </button>
       </div>
@@ -85,7 +85,7 @@ export function WatchMathLab() {
                 type="button"
                 onClick={() => toggle(range.id)}
                 aria-pressed={active}
-                className="-mx-2 grid min-h-11 w-[calc(100%+1rem)] grid-cols-[116px_minmax(0,1fr)] items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-surface/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[148px_minmax(0,1fr)]"
+                className="-mx-2 grid min-h-12 w-[calc(100%+1rem)] grid-cols-[128px_minmax(0,1fr)] items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-surface/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:grid-cols-[160px_minmax(0,1fr)]"
               >
                 <span className="flex items-center gap-2.5">
                   <span
@@ -100,13 +100,13 @@ export function WatchMathLab() {
                   <span className="min-w-0">
                     <span
                       className={cn(
-                        "flex items-baseline gap-1.5 text-[12px] font-medium transition-colors",
+                        "block text-sm font-medium transition-colors",
                         active ? "text-ink" : "text-muted-ink",
                       )}
                     >
                       {range.label}
                     </span>
-                    <span className="mt-0.5 block text-[10.5px] tabular-nums text-subtle-ink">
+                    <span className="mt-0.5 block text-xs tabular-nums text-subtle-ink">
                       {range.from}–{range.to}s
                     </span>
                   </span>
@@ -115,7 +115,7 @@ export function WatchMathLab() {
                 <span className="relative block h-6" aria-hidden="true">
                   <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-line/70" />
                   <span
-                    className="absolute top-1/2 h-2.5 -translate-y-1/2 rounded-full transition-opacity duration-200"
+                    className="absolute top-1/2 h-2 -translate-y-1/2 rounded-full transition-opacity duration-200"
                     style={{
                       left: `${(range.from / duration) * 100}%`,
                       width: `${(seconds / duration) * 100}%`,
@@ -129,21 +129,19 @@ export function WatchMathLab() {
           })}
         </div>
 
-        <div className="mt-3 border-t border-line/70 pt-4">
-          <div className="grid grid-cols-[116px_minmax(0,1fr)] items-center gap-3 sm:grid-cols-[148px_minmax(0,1fr)]">
+        <div className="mt-4 border-t border-line/70 pt-4">
+          <div className="grid grid-cols-[128px_minmax(0,1fr)] items-center gap-3 sm:grid-cols-[160px_minmax(0,1fr)]">
             <div>
-              <div className="flex items-baseline gap-2">
-                <div className="text-xs font-medium text-green-deep">
-                  Union
-                </div>
-                <div className="text-lg font-medium leading-none tracking-[-0.02em] text-green-deep tabular-nums">
-                  {unique}s
-                </div>
-              </div>
-              <span className="mt-1 block text-[11px] text-muted-ink">
+              <span className="block text-sm font-medium text-green-deep">
+                Unique watched
+              </span>
+              <span className="mt-1 block text-2xl font-medium leading-none tracking-[-0.02em] text-green-deep tabular-nums">
+                {unique}s
+              </span>
+              <span className="mt-0.5 block text-xs text-muted-ink">
                 {chosen.length === 0
                   ? "No ranges selected"
-                   : `${union.length} ${union.length === 1 ? "block" : "blocks"}`}
+                  : `${union.length} watched ${union.length === 1 ? "range" : "ranges"}`}
               </span>
             </div>
 
@@ -161,9 +159,9 @@ export function WatchMathLab() {
             </div>
           </div>
 
-          <div className="mt-2 grid grid-cols-[116px_minmax(0,1fr)] gap-3 sm:grid-cols-[148px_minmax(0,1fr)]">
+          <div className="mt-2 grid grid-cols-[128px_minmax(0,1fr)] gap-3 sm:grid-cols-[160px_minmax(0,1fr)]">
             <div />
-            <div className="flex justify-between text-[10px] tabular-nums text-subtle-ink">
+            <div className="flex justify-between text-xs tabular-nums text-subtle-ink">
               {[0, 10, 20, 30, 40].map((tick) => (
                 <span key={tick}>{tick}s</span>
               ))}
@@ -173,20 +171,17 @@ export function WatchMathLab() {
       </div>
 
       <dl
-        className="mx-5 grid grid-cols-2 gap-x-5 gap-y-4 border-t border-line/70 py-4 sm:grid-cols-4"
+        className="mx-5 grid grid-cols-2 gap-x-5 gap-y-5 border-t border-line/70 py-4 sm:grid-cols-4"
         aria-live="polite"
         aria-atomic="true"
       >
         {[
-          { label: "Total", value: `${total}s`, note: "sum of lengths" },
-          { label: "Unique", value: `${unique}s`, note: "size of the union", accent: true },
-          { label: "Rewatch", value: `${repeat}s`, note: "total − unique" },
-          { label: "Completion", value: `${completion.toFixed(1)}%`, note: `unique ÷ ${duration}s` },
+          { label: "Total watched", value: `${total}s`, accent: false },
+          { label: "Unique watched", value: `${unique}s`, accent: true },
+          { label: "Rewatch", value: `${repeat}s`, accent: false },
+          { label: "Completion", value: `${completion.toFixed(1)}%`, accent: false },
         ].map((metric) => (
-          <div
-            key={metric.label}
-            className="min-w-0"
-          >
+          <div key={metric.label} className="min-w-0">
             <dt
               className={cn(
                 "text-xs font-medium",
@@ -197,7 +192,7 @@ export function WatchMathLab() {
             </dt>
             <dd
               className={cn(
-                "mt-1.5 text-xl font-medium leading-none tracking-[-0.02em] tabular-nums",
+                "mt-1.5 text-2xl font-medium leading-none tracking-[-0.02em] tabular-nums",
                 metric.accent ? "text-green-deep" : "text-ink",
               )}
             >
@@ -207,8 +202,8 @@ export function WatchMathLab() {
         ))}
       </dl>
 
-      <div className="border-t border-line/70 px-5 py-3 text-xs leading-5 text-muted-ink">
-        <span>Overlapping seconds count once. Pauses are excluded.</span>
+      <div className="border-t border-line/70 px-5 py-3 text-sm leading-6 text-muted-ink">
+        Overlapping seconds count once. Pauses are excluded.
       </div>
     </div>
   );

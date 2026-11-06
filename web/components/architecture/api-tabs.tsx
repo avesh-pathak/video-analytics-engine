@@ -178,11 +178,16 @@ function CodePane({
 }) {
   return (
     <div className={cn("min-w-0", className)}>
-      <div className="flex items-center justify-between border-b border-white/10 px-4 py-2.5">
-        <span className="font-mono text-[8.5px] uppercase tracking-[0.12em] text-white/30">{title}</span>
-        <span className="font-mono text-[8px] text-white/20">JSON</span>
+      <div className="border-b border-white/10 px-4 py-2.5">
+        <span className="font-mono text-xs uppercase tracking-[0.1em] text-white/40">
+          {title}
+        </span>
       </div>
-      <pre className="overflow-x-auto p-4 font-mono text-[9.5px] leading-[1.9] sm:text-[10px]">
+      <pre
+        tabIndex={0}
+        aria-label={`${title} code. Scroll horizontally to read.`}
+        className="max-w-full overflow-x-auto overscroll-x-contain p-4 font-mono text-xs leading-6 sm:text-[13px]"
+      >
         <code>{highlight(code)}</code>
       </pre>
     </div>
@@ -196,7 +201,9 @@ export function ApiTabs() {
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(`${tab.method} ${tab.endpoint}\n\n${tab.request}\n\n${tab.response}`);
+      await navigator.clipboard.writeText(
+        `${tab.method} ${tab.endpoint}\n\n${tab.request}\n\n${tab.response}`,
+      );
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -206,15 +213,17 @@ export function ApiTabs() {
 
   return (
     <div className="overflow-hidden rounded-card border border-line bg-card shadow-card">
-      <div className="flex flex-col justify-between gap-3 border-b border-line-soft p-4 sm:flex-row sm:items-center sm:px-5">
+      <div className="flex flex-col gap-3 border-b border-line-soft p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
         <Tabs value={active} onValueChange={setActive}>
           <TabsList className="h-auto bg-surface-muted">
             {tabs.map((item) => (
-              <TabsTrigger key={item.id} value={item.id} className="gap-1.5 text-[10.5px]">
+              <TabsTrigger key={item.id} value={item.id} className="gap-2 text-sm">
                 <span
                   className={cn(
-                    "rounded-full px-1 py-0.5 font-mono text-[7px] font-semibold",
-                    item.method === "POST" ? "bg-mint text-green-deep" : "bg-sky-soft/70 text-sky-ink",
+                    "rounded-full px-1.5 py-0.5 font-mono text-xs font-semibold",
+                    item.method === "POST"
+                      ? "bg-mint text-green-deep"
+                      : "bg-sky-soft/70 text-sky-ink",
                   )}
                 >
                   {item.method}
@@ -227,29 +236,33 @@ export function ApiTabs() {
         <button
           type="button"
           onClick={copy}
-          className="inline-flex items-center gap-1.5 self-start rounded-full border border-line bg-card px-2.5 py-1.5 text-[9px] font-medium text-muted-ink transition hover:bg-mint-soft sm:self-auto"
+          className="inline-flex min-h-10 items-center gap-1.5 self-start rounded-full border border-line bg-card px-3 py-1.5 text-sm font-medium text-muted-ink transition hover:bg-mint-soft sm:self-auto"
         >
-          {copied ? <Check className="size-3 text-green" /> : <Copy className="size-3" />}
+          {copied ? <Check className="size-3.5 text-green" /> : <Copy className="size-3.5" />}
           {copied ? "Copied" : "Copy snippet"}
         </button>
       </div>
 
       <div className="border-b border-line-soft bg-surface-soft px-4 py-3 sm:px-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-md bg-card px-2 py-1 font-mono text-[9px] text-body shadow-[0_0_0_1px_rgba(229,229,229,1)]">
+        <div className="flex flex-col gap-1.5 sm:flex-row sm:items-baseline sm:gap-3">
+          <code className="w-fit max-w-full overflow-x-auto rounded-md bg-card px-2 py-1 font-mono text-xs text-body">
             {tab.method} {tab.endpoint}
-          </span>
-          <span className="text-[9.5px] text-muted-ink">{tab.description}</span>
+          </code>
+          <p className="min-w-0 text-sm leading-6 text-muted-ink">{tab.description}</p>
         </div>
       </div>
 
-      <div className="grid bg-code text-code-foreground lg:grid-cols-2">
-        <CodePane title="Request" code={tab.request} className="border-b border-white/10 lg:border-b-0 lg:border-r" />
+      <div className="grid grid-cols-1 bg-code text-code-foreground lg:grid-cols-2">
+        <CodePane
+          title="Request"
+          code={tab.request}
+          className="border-b border-white/10 lg:border-b-0 lg:border-r"
+        />
         <CodePane title="Response" code={tab.response} />
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line-soft px-4 py-3 text-[9px] text-subtle-ink sm:px-5">
-        <span>At-least-once delivery. Two independent idempotency guards.</span>
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line-soft px-4 py-3 text-xs text-subtle-ink sm:px-5">
+        <span>At-least-once delivery · two independent idempotency guards</span>
         <span className="inline-flex items-center gap-1.5">
           <span className="size-1.5 rounded-full bg-green" />
           Per-segment verdicts, not a single ok
