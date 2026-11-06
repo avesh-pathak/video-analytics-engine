@@ -75,9 +75,22 @@ export function MermaidDiagram({
           clusterBkg: color("card"),
           clusterBorder: color("border"),
           edgeLabelBackground: color("card"),
+          actorBkg: color("surface"),
+          actorBorder: color("border"),
+          actorTextColor: color("foreground"),
+          actorLineColor: color("muted-foreground"),
+          signalColor: color("foreground"),
+          signalTextColor: color("foreground"),
+          noteBkgColor: color("surface"),
+          noteBorderColor: color("border"),
+          noteTextColor: color("foreground"),
+          labelBoxBkgColor: color("surface"),
+          labelTextColor: color("foreground"),
           fontSize: "14px",
         },
         flowchart: { htmlLabels: false, curve: "linear", useMaxWidth: true, padding: 18 },
+        sequence: { useMaxWidth: true },
+        state: { useMaxWidth: true },
       });
       const { svg } = await mermaid.render(`architecture${id}${resolvedTheme}`, source);
       if (!cancelled) setResult({ theme: resolvedTheme, svg });
@@ -95,18 +108,11 @@ export function MermaidDiagram({
         {mobileFallback ? <div className="md:hidden">{mobileFallback}</div> : null}
         {svg ? (
           <div
-            tabIndex={0}
-            role="region"
-            aria-label={`${label}. Scroll horizontally on small screens.`}
-            className={`overflow-x-auto rounded-lg ${mobileFallback ? "hidden md:block" : ""}`}
-          >
-            <div
-              role="img"
-              aria-label={label}
-              className="mx-auto min-w-[640px] [&_svg]:mx-auto [&_svg]:h-auto [&_svg]:w-full"
-              dangerouslySetInnerHTML={{ __html: svg }}
-            />
-          </div>
+            role="img"
+            aria-label={label}
+            className={`mx-auto min-w-0 w-full [&_svg]:mx-auto [&_svg]:h-auto [&_svg]:w-full ${mobileFallback ? "hidden md:block" : ""}`}
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
         ) : (
           <p className={`${mobileFallback ? "hidden md:grid" : "grid"} min-h-64 place-items-center text-sm text-muted-foreground`} role="status">
             {failed ? "Diagram unavailable. The complete source is below." : "Loading architecture diagram…"}
@@ -114,7 +120,7 @@ export function MermaidDiagram({
         )}
       </div>
       <figcaption className="border-t border-border px-5 py-4 text-xs leading-5 text-muted-foreground sm:px-6">
-        {caption} {!mobileFallback ? <span className="sm:hidden">Swipe the diagram to explore.</span> : null}
+        {caption}
         <details className="mt-3">
           <summary className="w-fit cursor-pointer font-medium text-primary">View Mermaid source</summary>
           <pre className="mt-3 overflow-x-auto rounded-xl bg-muted p-4 font-mono text-xs leading-6 text-muted-foreground">{source}</pre>
