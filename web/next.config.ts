@@ -1,3 +1,4 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 
 /**
@@ -41,12 +42,15 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  // Pin the tracing root to this project. Without it, a lockfile in a parent
-  // directory can make Next infer the wrong workspace root.
-  outputFileTracingRoot: process.cwd(),
+  // Allow a production build to run beside a live dev server during review.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
+  // Pin the tracing root to the repository. The web app lives in web/,
+  // while the API routes import the engine and server from the repo root.
+  outputFileTracingRoot: path.resolve(process.cwd(), ".."),
   serverExternalPackages: ["node:sqlite"],
-  // The engine uses explicit `.js` specifiers so it stays valid under plain
-  // Node ESM. Next's bundler needs to map them back to the TypeScript source.
+  // The engine keeps explicit `.js` specifiers so it stays valid under plain
+  // Node ESM. Webpack maps them back to the TypeScript source; Turbopack does
+  // not, so the scripts opt into webpack explicitly on Next 16.
   webpack(config) {
     config.resolve.extensionAlias = {
       ...(config.resolve.extensionAlias ?? {}),
