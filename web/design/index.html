@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Fiesta Design System — One language, every model</title>
+<meta name="description" content="The AI Fiesta design system: mint gradients, one geometric sans, pill actions, floating product windows and gentle vertical motion. Extracted from aifiesta.ai.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@300..800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FDFDFC;
+    --fg:#141A22;
+    --ink:#0A0A0A;
+    --muted:#737373;
+    --muted-2:#5A5E5B;
+    --line:#E5E5E5;
+    --line-2:#EAEBEA;
+    --card:#FFFFFF;
+    --mint:#E5F6EA;
+    --mint-2:#F2F8F4;
+    --green:#30A66D;
+    --green-bright:#2EB573;
+    --teal:#16BFA6;
+    --blue:#009CD0;
+    --sky:#CDEAF2;
+    --lilac:#CFC1F2;
+    --star:#F6B100;
+    --button:#262626;
+    --panel:#2C2D31;
+    --radius-card:28px;
+    --radius-panel:40px;
+    --gutter:40px;
+    --max:1360px;
+    --ease:cubic-bezier(.22,.61,.36,1);
+    --ease-panel:cubic-bezier(.22,.7,.28,1);
+    --font:"Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  ::selection{background:var(--mint);color:var(--ink)}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gutter)}
+  .pill{display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:9999px;font-weight:600;white-space:nowrap;transition:transform .15s var(--ease),background .15s,border-color .15s,box-shadow .25s}
+  .pill svg{width:17px;height:17px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.8}
+  .pill-dark{background:var(--button);color:#FAFAFA;height:48px;padding:0 24px;font-size:16px}
+  .pill-dark:hover{background:#111;transform:translateY(-1px)}
+  .pill-light{background:#fff;color:var(--ink);height:48px;padding:0 22px;font-size:16px;border:1px solid var(--line)}
+  .pill-light:hover{border-color:#cfcfcf;transform:translateY(-1px)}
+  .pill-sm{height:40px;padding:0 18px;font-size:14px}
+
+  /* header */
+  header.site{position:fixed;inset:0 0 auto 0;height:68px;z-index:50;background:#fff;display:flex;align-items:center}
+  header.site .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%}
+  .brand{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:600;letter-spacing:-.035em}
+  .atom{width:34px;height:34px;flex:0 0 auto}
+  nav.top{display:flex;align-items:center;gap:42px;font-size:16px}
+  nav.top a{color:var(--ink);transition:color .15s}
+  nav.top a:hover{color:#5D646D}
+  nav.top a.active{color:var(--green)}
+  .h-right{display:flex;align-items:center;gap:12px}
+  .h-badge{font-size:11px;font-weight:600;color:var(--green);background:var(--mint);border-radius:999px;padding:5px 10px}
+  .burger{display:none}
+
+  /* hero */
+  .hero{padding:84px 0 0}
+  .hero-card{
+    background:linear-gradient(rgba(229,246,234,.6) -25.844%,rgba(255,255,255,.6) 63.658%);
+    border-radius:var(--radius-panel);
+    padding:56px 72px 64px;
+    position:relative;overflow:hidden;
+  }
+  .hero-card::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(608px 341px at 547px -68px,rgba(255,255,255,.5),transparent),
+      radial-gradient(486px 273px at 36px 649px,rgba(101,217,162,.55),transparent),
+      radial-gradient(547px 307px at 49px 55px,rgba(169,233,201,.7),transparent),
+      radial-gradient(730px 410px at 1070px 171px,rgba(63,180,220,.55),transparent);
+  }
+  .hero-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center}
+  .yc{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid #FFE3D5;border-radius:999px;padding:5px 12px 5px 6px;font-size:13px;color:#5B4A42;margin-bottom:30px}
+  .yc .y{width:20px;height:20px;border-radius:50%;background:#FF6B2C;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:700}
+  h1{font-size:clamp(38px,4.6vw,64px);line-height:.98;font-weight:500;letter-spacing:-.02em;color:var(--ink);max-width:900px}
+  .hero-sub{font-size:20px;line-height:1.5;color:var(--muted);max-width:760px;margin-top:24px}
+  .hero-cta{display:flex;align-items:center;gap:18px;margin-top:32px;flex-wrap:wrap;justify-content:center}
+  .avatars{display:flex;align-items:center;gap:10px}
+  .avatars .stack{display:flex}
+  .avatars .a{width:34px;height:34px;border-radius:50%;border:2px solid #fff;margin-left:-10px;background:linear-gradient(145deg,#F7C9A8,#B7E3C8);display:grid;place-items:center;font-size:11px;font-weight:600;color:#3C4A42}
+  .avatars .a:first-child{margin-left:0}
+  .avatars b{font-size:14px;font-weight:600;color:var(--ink)}
+
+  /* tool rail */
+  .rail{display:flex;gap:12px;margin:42px 0 0;justify-content:center;flex-wrap:wrap}
+  .tool{width:56px;height:56px;border-radius:20px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;transition:.2s var(--ease);position:relative}
+  .tool svg{width:22px;height:22px;stroke:#6B706C;fill:none;stroke-width:1.5}
+  .tool:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,15,26,.08)}
+  .tool.on{background:var(--mint);border-color:var(--mint);box-shadow:0 0 0 4px #fff,0 8px 18px rgba(48,166,109,.12)}
+  .tool.on svg{stroke:#1E6B47}
+  .tool.on::after{content:"";position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:22px;height:12px;background:#fff;border-radius:0 0 8px 8px;clip-path:polygon(0 0,100% 0,50% 100%)}
+
+  /* product window */
+  .showcase{
+    margin-top:22px;border-radius:30px;padding:34px 26px 0;
+    background:linear-gradient(145deg,#A9E9C9 0%,#62C6DF 55%,#CFC1F2 100%);
+    position:relative;overflow:hidden;
+  }
+  .showcase::after{content:"";position:absolute;inset:auto 0 0 0;height:70px;background:linear-gradient(transparent,rgba(255,255,255,.35))}
+  .stage{position:relative;z-index:2;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -2px 0 rgba(255,255,255,.4),0 30px 60px rgba(15,15,26,.18);overflow:hidden;min-height:330px}
+  .win-bar{height:38px;display:flex;align-items:center;gap:8px;padding:0 14px;border-bottom:1px solid #ECEEEC;background:#fff}
+  .win-bar .dots{display:flex;gap:4px}
+  .win-bar .dots i{width:6px;height:6px;border-radius:50%;background:#D9DED9}
+  .win-bar .addr{flex:1;height:22px;border-radius:6px;background:#F6F7F6;display:flex;align-items:center;padding:0 10px;font-size:9px;color:#8A8F8B;gap:6px}
+  .win-body{display:grid;grid-template-columns:190px 1fr}
+  .side{border-right:1px solid #ECEEEC;padding:14px 12px;background:#FBFCFB}
+  .side .brandline{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;margin-bottom:14px}
+  .side .brandline .sq{width:18px;height:18px;border-radius:5px;background:var(--button);color:#fff;display:grid;place-items:center;font-size:8px}
+  .side .new{display:flex;align-items:center;gap:6px;border:1px solid #E8EBE8;background:#fff;border-radius:999px;padding:6px 9px;font-size:9.5px;color:#4A4F4B;margin-bottom:12px}
+  .side .row{display:flex;align-items:center;gap:7px;padding:6px 4px;font-size:10px;color:#6B706C}
+  .side .row.on{color:#0A0A0A;font-weight:600}
+  .side .row i{width:11px;height:11px;border-radius:3px;background:#E8EBE8}
+  .chat{padding:16px 18px;display:flex;flex-direction:column;gap:12px;background:#fff}
+  .chat .q{align-self:flex-end;background:#262626;color:#fff;border-radius:14px 14px 4px 14px;padding:9px 13px;font-size:10.5px;max-width:70%}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .ans{border:1px solid #EAEBEA;border-radius:12px;padding:11px;background:#fff}
+  .ans .who{display:flex;align-items:center;gap:6px;font-size:9px;color:#6B706C;margin-bottom:7px}
+  .ans .who b{color:#0A0A0A;font-weight:600}
+  .ans .who .dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(145deg,#F7C9A8,#B7E3C8)}
+  .ans p{font-size:9.5px;line-height:1.5;color:#4A4F4B}
+  .ans .tag{display:inline-block;margin-top:7px;font-size:8px;color:#1E6B47;background:var(--mint);border-radius:999px;padding:2px 6px}
+  .win-foot{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid #ECEEEC;background:#fff}
+  .win-foot .l{display:flex;gap:6px}
+  .win-foot .l span{font-size:8.5px;border:1px solid #EAEBEA;border-radius:999px;padding:3px 7px;color:#6B706C}
+  .win-foot .r{font-size:8.5px;color:#8A8F8B}
+  .stage-label{position:absolute;left:34px;top:52px;z-index:3;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#1E6B47;background:rgba(255,255,255,.85);border-radius:999px;padding:5px 11px;backdrop-filter:blur(6px)}
+  .stage-label .i{width:18px;height:18px;border-radius:50%;background:var(--mint);display:grid;place-items:center}
+  .stage-label svg{width:10px;height:10px;stroke:#1E6B47;fill:none;stroke-width:2}
+
+  /* sections */
+  section.sec{padding:120px 0 0}
+  .sec-head{text-align:center;max-width:760px;margin:0 auto 44px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--green);background:var(--mint);border-radius:999px;padding:6px 12px;margin-bottom:18px}
+  .sec h2{font-size:clamp(30px,3.6vw,48px);line-height:1.06;font-weight:500;letter-spacing:-.02em;color:var(--ink)}
+  .sec-head p{font-size:18px;line-height:1.55;color:var(--muted);margin-top:14px}
+
+  /* principles bento */
+  .bento{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .bcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius-card);padding:28px;box-shadow:0 1px 2px rgba(13,15,13,.03);transition:transform .25s var(--ease),box-shadow .25s}
+  .bcard:hover{transform:translateY(-3px);box-shadow:0 18px 44px rgba(13,15,13,.06)}
+  .bcard .n{font-size:11px;font-weight:600;color:var(--green);letter-spacing:.1em;margin-bottom:24px}
+  .bcard h3{font-size:20px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px;color:var(--ink)}
+  .bcard p{font-size:14px;line-height:1.6;color:var(--muted)}
+  .bcard.wide{grid-column:span 2;background:linear-gradient(rgba(229,246,234,.65),rgba(255,255,255,.9));border-color:#D8EFDF}
+  .bcard.span2{grid-column:span 2}
+  .bcard.dark{background:var(--button);border-color:var(--button);color:#fff}
+  .bcard.dark h3{color:#fff}.bcard.dark p{color:rgba(255,255,255,.65)}.bcard.dark .n{color:#7BE0A6}
+
+  /* colour */
+  .swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .sw{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;transition:transform .25s var(--ease),box-shadow .25s}
+  .sw:hover{transform:translateY(-3px);box-shadow:0 18px 44px rgba(13,15,13,.06)}
+  .sw .chip{height:110px;position:relative}
+  .sw .chip span{position:absolute;left:12px;bottom:10px;font-size:10px;font-weight:600;background:rgba(255,255,255,.88);border-radius:999px;padding:3px 8px;color:#141A22}
+  .sw .meta{padding:14px 16px 16px}
+  .sw .meta b{display:block;font-size:14px;font-weight:600;color:var(--ink)}
+  .sw .meta code{font-size:10.5px;color:var(--muted);font-family:ui-monospace,monospace}
+  .sw .meta em{display:block;font-style:normal;font-size:11.5px;color:#8A8F8B;margin-top:7px;line-height:1.4}
+  .grad-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:16px}
+  .grad{border-radius:24px;border:1px solid var(--line);overflow:hidden;background:#fff}
+  .grad .g{height:96px}
+  .grad .t{padding:12px 14px;font-size:11px;color:var(--muted);font-family:ui-monospace,monospace}
+  .g-hero{background:linear-gradient(rgba(229,246,234,.6) -25.844%,rgba(255,255,255,.6) 63.658%)}
+  .g-show{background:linear-gradient(145deg,#A9E9C9 0%,#62C6DF 55%,#CFC1F2 100%)}
+  .g-brand{background:linear-gradient(90deg,#39D47A 4%,#16BFA6 50%,#009CD0 96%)}
+  .g-footer{background:linear-gradient(#fff,#F5F5F5)}
+
+  /* type */
+  .type-wrap{display:grid;grid-template-columns:1.3fr .7fr;gap:16px}
+  .spec{background:#fff;border:1px solid var(--line);border-radius:var(--radius-card);padding:32px}
+  .spec .row{padding:20px 0;border-bottom:1px solid var(--line)}
+  .spec .row:first-child{padding-top:0}
+  .spec .row:last-child{border-bottom:0;padding-bottom:0}
+  .spec .tag{display:flex;justify-content:space-between;gap:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8A8F8B;margin-bottom:10px}
+  .t-xl{font-size:clamp(38px,3.5vw,48px);line-height:1.02;font-weight:500;letter-spacing:-.02em;color:var(--ink)}
+  .t-l{font-size:48px;line-height:1.06;font-weight:500;letter-spacing:-.02em;color:var(--ink)}
+  .t-m{font-size:34px;line-height:1.12;font-weight:600;letter-spacing:-.015em;color:var(--ink)}
+  .t-body{font-size:20px;line-height:1.5;color:var(--muted);max-width:560px}
+  .t-small{font-size:14px;line-height:1.5;color:var(--muted)}
+  .type-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius-card);padding:28px;display:flex;flex-direction:column;gap:20px}
+  .type-card .f{border-bottom:1px solid var(--line);padding-bottom:18px}
+  .type-card .f:last-child{border-bottom:0;padding-bottom:0}
+  .type-card .name{font-size:11px;color:#8A8F8B;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+  .type-card .s{font-size:26px;font-weight:500;letter-spacing:-.02em;color:var(--ink)}
+  .type-card .u{font-size:12px;color:var(--muted);margin-top:5px}
+  .type-card .price{font-size:34px;font-weight:600;letter-spacing:-.02em}
+  .type-card .price small{font-size:14px;font-weight:400;color:var(--muted);letter-spacing:0}
+
+  /* shape */
+  .shape-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .shape{background:#fff;border:1px solid var(--line);border-radius:24px;padding:24px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
+  .shape .box{height:54px;background:var(--mint);border:1px solid #D6EDDD;display:grid;place-items:center;font-size:11px;color:#1E6B47}
+  .shape .lbl{font-size:11px;color:#8A8F8B;margin-top:12px}
+  .shape .v{font-size:18px;font-weight:600;color:var(--ink)}
+  .shadow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:16px}
+  .shadow{background:#fff;border:1px solid var(--line);border-radius:24px;padding:22px;text-align:center}
+  .shadow .demo{height:60px;border-radius:16px;background:#fff;margin-bottom:14px}
+  .shadow .lbl{font-size:11px;color:#8A8F8B;line-height:1.5}
+  .shadow:nth-child(1) .demo{box-shadow:0 1px 2px rgba(13,15,13,.04),0 18px 44px rgba(13,15,13,.05)}
+  .shadow:nth-child(2) .demo{box-shadow:0 10px 30px -6px rgba(15,15,26,.1)}
+  .shadow:nth-child(3) .demo{box-shadow:0 7px 12px rgba(26,46,77,.14)}
+  .shadow:nth-child(4) .demo{box-shadow:0 5px 12px -2px rgba(48,166,109,.45),0 0 0 4px rgba(48,166,109,.14)}
+
+  /* components */
+  .comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .comp{background:#fff;border:1px solid var(--line);border-radius:var(--radius-card);padding:28px}
+  .comp .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#8A8F8B;margin-bottom:18px}
+  .pill-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .pill-green{border:1px solid var(--green-bright);color:#1E6B47;height:44px;padding:0 20px;font-size:14px;border-radius:9999px;display:inline-flex;align-items:center;gap:8px;font-weight:600;white-space:nowrap;flex:0 0 auto}
+  .pill-green svg{width:16px;height:16px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.8}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--line-2);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:500;box-shadow:0 1px 2px rgba(13,15,13,.04)}
+  .chip .m{width:16px;height:16px;border-radius:50%;background:linear-gradient(145deg,#F7C9A8,#B7E3C8);display:grid;place-items:center;font-size:7px;font-weight:700;color:#3C4A42}
+  .seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:#F4F6F4;border:1px solid var(--line-2)}
+  .seg button{font-size:13px;font-weight:500;padding:7px 14px;border-radius:999px;color:#6B706C;transition:.15s}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(13,15,13,.08),0 0 0 1px rgba(13,15,13,.04)}
+  .price-card{border:1px solid var(--line);border-radius:24px;padding:8px;background:#fff}
+  .price-card.sel{border-color:var(--green-bright);box-shadow:0 0 0 3px rgba(48,166,109,.08)}
+  .price-inner{background:#F5F5F5;border-radius:20px;padding:18px 20px}
+  .price-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600}
+  .price-top .save{background:#262626;color:#fff;font-size:10px;border-radius:999px;padding:4px 8px}
+  .price-num{font-size:40px;font-weight:600;letter-spacing:-.03em;margin-top:8px;line-height:1}
+  .price-num small{font-size:13px;font-weight:400;color:var(--muted);letter-spacing:0}
+  .price-note{font-size:11.5px;color:var(--muted);margin-top:8px}
+  .buy{display:flex;align-items:center;justify-content:center;gap:8px;background:#262626;color:#fff;border-radius:999px;height:38px;font-size:13px;font-weight:600;margin-top:12px}
+  .gift{display:flex;align-items:center;gap:8px;background:var(--mint);border-radius:12px;padding:9px 11px;margin-top:10px;font-size:11px;color:#1E6B47;font-weight:600;position:relative;overflow:hidden}
+  .gift::after{content:"";position:absolute;right:-10px;top:-10px;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle,rgba(48,166,109,.35),transparent 70%);animation:halo 2.2s ease-in-out infinite}
+  @keyframes halo{0%,100%{transform:scale(.8);opacity:.5}50%{transform:scale(1.25);opacity:1}}
+  .acc{border-top:1px solid var(--line)}
+  .acc-item{border-bottom:1px solid var(--line)}
+  .acc-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:15px 2px;text-align:left;font-size:14.5px;font-weight:500;color:var(--ink)}
+  .acc-q .ic{width:24px;height:24px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;flex:0 0 auto;transition:transform .3s var(--ease)}
+  .acc-q .ic svg{width:11px;height:11px;stroke:var(--ink);fill:none;stroke-width:1.8}
+  .acc-a{max-height:0;overflow:hidden;opacity:0;transition:max-height .3s var(--ease),opacity .3s;font-size:13px;line-height:1.6;color:var(--muted);padding-right:40px}
+  .acc-item.open .acc-a{max-height:150px;opacity:1;padding-bottom:16px}
+  .acc-item.open .ic{transform:rotate(180deg)}
+  .sticky-demo{border:1px solid var(--line);border-radius:18px;padding:10px;display:flex;align-items:center;gap:10px;background:#fff;box-shadow:0 10px 30px -6px rgba(15,15,26,.12)}
+  .sticky-demo .cell{flex:1;text-align:center;font-size:11px;color:var(--muted);line-height:1.3}
+  .sticky-demo .cell b{display:block;font-size:14px;color:var(--ink);font-weight:600}
+  .sticky-demo .cell.on{background:var(--mint);border-radius:999px;padding:7px 10px;color:#1E6B47}
+  .sticky-demo .cell.on b{color:#1E6B47}
+  .sticky-demo .buy2{background:#262626;color:#fff;border-radius:999px;padding:11px 16px;font-size:12px;font-weight:600;white-space:nowrap}
+
+  /* motion */
+  .motion-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .demo-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px;min-height:170px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+  .demo-card .lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8A8F8B}
+  .demo-card .stage{height:78px;display:grid;place-items:center;position:relative;overflow:hidden}
+  .fade-stage{width:100%;text-align:center}
+  .fade-stage .n{font-size:30px;font-weight:600;letter-spacing:-.03em;color:var(--ink)}
+  .fade-stage .n.fade{animation:softfade .42s cubic-bezier(.33,1,.68,1) both}
+  @keyframes softfade{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:none}}
+  .slide-stage{width:100%;height:64px;position:relative;overflow:hidden;border-radius:12px;background:var(--mint)}
+  .slide-stage .s{position:absolute;inset:0;display:grid;place-items:center;font-size:11px;font-weight:600;color:#1E6B47;transition:transform .64s var(--ease-panel),opacity .64s var(--ease-panel)}
+  .mm{overflow:hidden;width:100%;mask-image:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent)}
+  .mm .tr{display:flex;gap:7px;width:max-content;animation:marq 26s linear infinite}
+  .mm .tr span{font-size:10px;border:1px solid var(--line-2);border-radius:999px;padding:5px 9px;white-space:nowrap;background:#fff}
+  @keyframes marq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .dot-stage{display:flex;gap:8px}
+  .dot-stage i{width:10px;height:10px;border-radius:50%;background:var(--green);opacity:.25;animation:dot 1.6s ease-in-out infinite}
+  .dot-stage i:nth-child(2){animation-delay:.2s}.dot-stage i:nth-child(3){animation-delay:.4s}.dot-stage i:nth-child(4){animation-delay:.6s}
+  @keyframes dot{0%,100%{opacity:.2;transform:scale(.85)}50%{opacity:1;transform:scale(1.1)}}
+  .motion-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;margin-top:16px}
+  .motion-table th{text-align:left;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8A8F8B;padding:13px 18px;background:#FAFBFA;border-bottom:1px solid var(--line);font-weight:600}
+  .motion-table td{padding:12px 18px;border-bottom:1px solid var(--line);font-size:12.5px;color:#4A4F4B;vertical-align:top}
+  .motion-table tr:last-child td{border-bottom:0}
+  .motion-table td:first-child{font-family:ui-monospace,monospace;font-size:11px;color:#1E6B47;white-space:nowrap}
+  .motion-table td:nth-child(2){font-family:ui-monospace,monospace;font-size:10.5px;color:var(--muted);white-space:nowrap}
+
+  /* pages */
+  .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .shot{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;transition:transform .3s var(--ease),box-shadow .3s}
+  .shot:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(13,15,13,.08)}
+  .shot .img{aspect-ratio:16/10;overflow:hidden;background:var(--mint-2);border-bottom:1px solid var(--line)}
+  .shot .img img{width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform 1.2s var(--ease)}
+  .shot:hover .img img{transform:scale(1.025)}
+  .shot .cap{padding:14px 16px 16px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+  .shot .cap b{display:block;font-size:14px;font-weight:600;color:var(--ink)}
+  .shot .cap span{display:block;font-size:10px;color:#8A8F8B;margin-top:3px;letter-spacing:.06em}
+  .shot .cap em{font-style:normal;font-size:10px;font-weight:600;color:#1E6B47;background:var(--mint);border-radius:999px;padding:3px 8px;white-space:nowrap}
+  .shot.wide{grid-column:span 2}
+
+  /* evidence */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:24px;padding:24px;text-align:center}
+  .stat b{display:block;font-size:34px;font-weight:600;letter-spacing:-.03em;color:var(--ink)}
+  .stat span{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#8A8F8B;margin-top:6px}
+  .evidence{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .ev{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden}
+  .ev img{width:100%;border-bottom:1px solid var(--line)}
+  .ev .cap{padding:14px 16px;display:flex;justify-content:space-between;gap:10px;font-size:10px;letter-spacing:.06em;color:#8A8F8B}
+
+  /* tokens */
+  .code{background:#2C2D31;border-radius:24px;overflow:hidden;color:#F5F5F5}
+  .code .bar{display:flex;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.1);font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.45)}
+  .code pre{padding:22px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;line-height:1.8;color:#E9EDEA;max-height:420px}
+  .code .k{color:#8BE3B3}.code .v{color:#A9D8F5}.code .c{color:rgba(255,255,255,.32)}
+
+  /* footer */
+  footer.site{margin-top:130px;background:linear-gradient(#fff 0%,#F5F5F5 100%);border-radius:40px 40px 0 0;border-top:1px solid var(--line);padding:56px 0 0;position:relative;overflow:hidden}
+  .foot-top{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;padding-bottom:40px;border-bottom:1px solid var(--line)}
+  .store{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:12px;background:#fff;margin-right:8px}
+  .foot-links{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;font-size:12px;color:#6B706C;padding:26px 0}
+  .foot-links a:hover{color:var(--ink)}
+  .giant{font-size:clamp(100px,20vw,300px);line-height:.75;font-weight:600;letter-spacing:-.05em;text-align:center;background:linear-gradient(180deg,#0A0A0A 0%,#0A0A0A 45%,rgba(10,10,10,.06) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;user-select:none;margin-bottom:-10px}
+  .foot-bottom{display:flex;justify-content:space-between;gap:16px;padding:18px 0 26px;font-size:10px;letter-spacing:.06em;color:#8A8F8B;border-top:1px solid var(--line)}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+
+  @media (max-width:1100px){
+    :root{--gutter:28px}
+    .hero-card{padding:44px 40px 48px}
+    .bento,.swatches,.grad-row,.shape-grid,.shadow-grid,.motion-grid,.gallery,.stats{grid-template-columns:1fr 1fr}
+    .type-wrap,.comp-grid{grid-template-columns:1fr}
+    .bcard.wide{grid-column:span 2}
+    .shot.wide{grid-column:span 2}
+    nav.top{gap:22px}
+  }
+  @media (max-width:760px){
+    :root{--gutter:18px}
+    nav.top,.h-badge,.h-right{display:none}
+    .brand{white-space:nowrap}
+    .brand > span:last-child{display:none}
+    .comp,.comp-grid{min-width:0}
+    .seg{display:flex;width:100%;max-width:100%;overflow-x:auto;scrollbar-width:none}
+    .seg::-webkit-scrollbar{display:none}
+    .seg button{white-space:nowrap;flex:0 0 auto}
+    .burger{display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--line);border-radius:50%}
+    .hero{padding-top:80px}
+    .hero-card{padding:34px 20px 30px;border-radius:28px}
+    h1{font-size:38px}
+    .hero-sub{font-size:17px}
+    .bento,.swatches,.grad-row,.shape-grid,.shadow-grid,.motion-grid,.gallery,.stats,.evidence{grid-template-columns:1fr}
+    .bcard.wide,.bcard.span2,.shot.wide{grid-column:span 1}
+    .win-body{grid-template-columns:1fr}
+    .side{display:none}
+    .stage-label{display:none}
+    .foot-bottom{flex-direction:column;gap:8px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="AI Fiesta design system home">
+      <svg class="atom" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <circle cx="20" cy="20" r="4.2" fill="#30A66D"/>
+        <ellipse cx="20" cy="20" rx="16" ry="6.4" stroke="#16BFA6" stroke-width="2" transform="rotate(30 20 20)"/>
+        <ellipse cx="20" cy="20" rx="16" ry="6.4" stroke="#39D47A" stroke-width="2" transform="rotate(90 20 20)"/>
+        <ellipse cx="20" cy="20" rx="16" ry="6.4" stroke="#009CD0" stroke-width="2" transform="rotate(150 20 20)"/>
+      </svg>
+      <span>AI Fiesta</span>
+      <span style="font-size:10px;font-weight:600;letter-spacing:.12em;color:#8A8F8B;border-left:1px solid var(--line);padding-left:12px;margin-left:2px">DESIGN SYSTEM</span>
+    </a>
+    <nav class="top" aria-label="Sections">
+      <a href="#principles">Principles</a>
+      <a href="#color">Colour</a>
+      <a href="#type">Type</a>
+      <a href="#components">Components</a>
+      <a href="#motion">Motion</a>
+      <a href="#pages">Pages</a>
+      <a href="#tokens">Tokens</a>
+    </nav>
+    <div class="h-right">
+      <span class="h-badge">v1.0</span>
+      <a class="pill pill-dark pill-sm" href="#evidence">View evidence <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <button class="burger" aria-label="Open menu"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-card">
+      <div class="hero-inner">
+        <span class="yc"><span class="y">Y</span> Built by Y Combinator Alumni</span>
+        <h1>One language.<br>Every model.</h1>
+        <p class="hero-sub">The AI Fiesta design system: mint gradients, one geometric sans, pill actions, floating product windows, and motion that stays calm while the product does a hundred things.</p>
+        <div class="hero-cta">
+          <a class="pill pill-dark" href="#principles">Explore the system <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <div class="avatars">
+            <div class="stack"><span class="a">A</span><span class="a">M</span><span class="a">S</span></div>
+            <b>100+ models, one subscription</b>
+          </div>
+        </div>
+      </div>
+
+      <div class="rail" role="tablist" aria-label="Product tools">
+        <button class="tool" role="tab" aria-selected="false" data-tool="compare" aria-label="Compare"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="8" height="14" rx="2"/><rect x="13" y="5" width="8" height="14" rx="2"/></svg></button>
+        <button class="tool on" role="tab" aria-selected="true" data-tool="web" aria-label="Website Builder"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg></button>
+        <button class="tool" role="tab" aria-selected="false" data-tool="slides" aria-label="Slides"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
+        <button class="tool" role="tab" aria-selected="false" data-tool="video" aria-label="Video Studio"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg></button>
+        <button class="tool" role="tab" aria-selected="false" data-tool="image" aria-label="Image Studio"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg></button>
+        <button class="tool" role="tab" aria-selected="false" data-tool="research" aria-label="Deep Research"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(45 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.6" transform="rotate(-45 12 12)"/></svg></button>
+      </div>
+
+      <div class="showcase">
+        <div class="stage">
+          <div class="stage-label" id="stageLabel"><span class="i"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></span><span id="stageText">Website Builder</span></div>
+          <div class="win-bar">
+            <div class="dots"><i></i><i></i><i></i></div>
+            <div class="addr"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg> <span id="addrText">aifiesta.ai / website-builder</span></div>
+            <div style="font-size:9px;color:#8A8F8B">Preview</div>
+          </div>
+          <div class="win-body">
+            <aside class="side">
+              <div class="brandline"><span class="sq">YB</span> YourBrand AI</div>
+              <div class="new">＋ New chat</div>
+              <div class="row"><i></i> Images</div>
+              <div class="row"><i></i> Videos</div>
+              <div class="row on"><i></i> Websites</div>
+              <div class="row"><i></i> Slides</div>
+              <div class="row"><i></i> Research</div>
+            </aside>
+            <div class="chat">
+              <div class="q" id="heroQ">Build a launch page for Aurelia, a design studio.</div>
+              <div class="cols" id="heroCols">
+                <div class="ans"><div class="who"><span class="dot"></span><b>GPT-5.5</b> · 2.1s</div><p>Hero, three services, selected work, and a contact block. Type-led, warm white, one accent.</p><span class="tag">Section by section</span></div>
+                <div class="ans"><div class="who"><span class="dot"></span><b>Claude Opus 4.8</b> · 2.8s</div><p>Editorial layout with a large statement, case-study grid and a quiet footer. Ships to a real URL.</p><span class="tag">Publish ready</span></div>
+              </div>
+              <div class="win-foot"><div class="l"><span>Desktop</span><span>Tablet</span><span>Mobile</span></div><div class="r">Publish ↗</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section class="sec" id="principles">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">01 / Principles</span>
+      <h2>Soft technology, serious utility.</h2>
+      <p>Seven rules keep a hundred-model product feeling like one calm app.</p>
+    </div>
+    <div class="bento reveal">
+      <article class="bcard wide"><div class="n">01</div><h3>One subscription, one surface</h3><p>Every tool is shown inside the same rounded white app window. The UI is the proof that 100+ models and six tools have been consolidated.</p></article>
+      <article class="bcard"><div class="n">02</div><h3>Soft technology</h3><p>Mint, sky and lilac replace the dark “AI” aesthetic. No neon, no black backgrounds, no glitch.</p></article>
+      <article class="bcard"><div class="n">03</div><h3>Pill = action</h3><p>Anything that commits is a full-radius pill. Anything informational is a large rounded rectangle.</p></article>
+      <article class="bcard"><div class="n">04</div><h3>Abundance, calmly</h3><p>100+ models as a slow, edge-faded marquee of small chips. Dense, but never loud.</p></article>
+      <article class="bcard"><div class="n">05</div><h3>Proof by faces and numbers</h3><p>YC badge, 1M+ users, 15K+ reviews, avatar cluster, star ratings, named testimonials.</p></article>
+      <article class="bcard dark"><div class="n">06</div><h3>Motion you feel</h3><p>420–640ms vertical slides, 2.2s halos, 175s+ marquees. Nothing spins or flashes.</p></article>
+      <article class="bcard span2"><div class="n">07</div><h3>Mobile-first commerce</h3><p>A persistent Monthly / Yearly / Buy Now bar appears on phones. Yearly is the visual default, and the yearly plan is the visual hero on desktop too.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- COLOR -->
+<section class="sec" id="color">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">02 / Colour</span>
+      <h2>Colour is a wash, not a block.</h2>
+      <p>80% of every screen is white. The brand arrives as a mint-to-sky gradient, one green semantic, and one dark button.</p>
+    </div>
+    <div class="swatches reveal">
+      <div class="sw"><div class="chip" style="background:#0A0A0A"><span>#0A0A0A</span></div><div class="meta"><b>Ink</b><code>--text</code><em>Display, headlines</em></div></div>
+      <div class="sw"><div class="chip" style="background:#262626"><span>#262626</span></div><div class="meta"><b>Button ink</b><code>--button</code><em>Primary actions</em></div></div>
+      <div class="sw"><div class="chip" style="background:#737373"><span>#737373</span></div><div class="meta"><b>Muted</b><code>--text-muted</code><em>Subcopy, descriptions</em></div></div>
+      <div class="sw"><div class="chip" style="background:#E5F6EA"><span>#E5F6EA</span></div><div class="meta"><b>Mint</b><code>--brand-soft</code><em>Hero, feature tints</em></div></div>
+      <div class="sw"><div class="chip" style="background:#30A66D"><span>#30A66D</span></div><div class="meta"><b>Brand green</b><code>--primary</code><em>Positive, savings, checks</em></div></div>
+      <div class="sw"><div class="chip" style="background:#16BFA6"><span>#16BFA6</span></div><div class="meta"><b>Teal</b><code>--gradient-mid</code><em>Brand ribbon</em></div></div>
+      <div class="sw"><div class="chip" style="background:#009CD0"><span>#009CD0</span></div><div class="meta"><b>Sky</b><code>--gradient-end</code><em>Brand ribbon</em></div></div>
+      <div class="sw"><div class="chip" style="background:#CFC1F2"><span>#CFC1F2</span></div><div class="meta"><b>Lilac</b><code>--showcase-end</code><em>Showcase gradient</em></div></div>
+      <div class="sw"><div class="chip" style="background:#CDEAF2"><span>#CDEAF2</span></div><div class="meta"><b>Sky tint</b><code>--brand-blue</code><em>Cool accent</em></div></div>
+      <div class="sw"><div class="chip" style="background:#F6B100"><span>#F6B100</span></div><div class="meta"><b>Star</b><code>--star</code><em>Ratings only</em></div></div>
+      <div class="sw"><div class="chip" style="background:#E5E5E5"><span>#E5E5E5</span></div><div class="meta"><b>Hairline</b><code>--border</code><em>Cards, inputs</em></div></div>
+      <div class="sw"><div class="chip" style="background:#2C2D31"><span style="background:rgba(255,255,255,.9)">#2C2D31</span></div><div class="meta"><b>Dark panel</b><code>--dark-panel</code><em>App chrome, footer CTA</em></div></div>
+    </div>
+    <div class="grad-row reveal">
+      <div class="grad"><div class="g g-hero"></div><div class="t">HERO · MINT WASH → WHITE</div></div>
+      <div class="grad"><div class="g g-show"></div><div class="t">SHOWCASE · MINT → SKY → LILAC</div></div>
+      <div class="grad"><div class="g g-brand"></div><div class="t">BRAND · GREEN → TEAL → BLUE</div></div>
+      <div class="grad"><div class="g g-footer"></div><div class="t">FOOTER · WHITE → #F5F5F5</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPE -->
+<section class="sec" id="type">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">03 / Typography</span>
+      <h2>One family. Size and weight do the work.</h2>
+      <p>Google Sans Flex, 300–800. No serif, no mono, no second display face. Hierarchy comes from scale and tracking.</p>
+    </div>
+    <div class="type-wrap reveal">
+      <div class="spec">
+        <div class="row"><div class="tag"><span>DISPLAY XL · 60 / 58.8 · 500 · −1.2PX</span><span>GOOGLE SANS FLEX</span></div><div class="t-xl">World's Best AI Models &amp; Tools.<br>One Subscription.</div></div>
+        <div class="row"><div class="tag"><span>DISPLAY M · 48 / 50.88 · 500 · −1PX</span><span>GOOGLE SANS FLEX</span></div><div class="t-l">10x the output. Without 10 different tools.</div></div>
+        <div class="row"><div class="tag"><span>HEADING · 34 / 38 · 600 · −0.6PX</span><span>GOOGLE SANS FLEX</span></div><div class="t-m">The best value in AI</div></div>
+        <div class="row"><div class="tag"><span>SUBHEAD · 20 / 30 · 400</span><span>GOOGLE SANS FLEX</span></div><div class="t-body">Use 100+ AI models, with dedicated AI tools for chat, images, videos, presentations and websites, all for a fraction of the cost.</div></div>
+        <div class="row"><div class="tag"><span>BODY · 16 / 24 · 400</span><span>GOOGLE SANS FLEX</span></div><div class="t-small">Stop guessing which model to use. Every question goes to whichever model is best suited to answer it, so you get the best response.</div></div>
+      </div>
+      <div class="type-card">
+        <div class="f"><div class="name">Display</div><div class="s">World's Best AI Models</div><div class="u">500 · tight tracking · 0.98 line-height</div></div>
+        <div class="f"><div class="name">Body</div><div class="s" style="font-size:16px;font-weight:400;line-height:1.5;color:#737373">Use 100+ AI models, with dedicated AI tools for chat, images, videos, presentations and websites.</div><div class="u">400 · neutral tracking · 1.5 line-height</div></div>
+        <div class="f"><div class="name">Price</div><div class="price">₹7,999 <small>/year</small></div><div class="u">600 · −0.03em · tabular</div></div>
+        <div class="f"><div class="name">Label</div><div class="s" style="font-size:12px;font-weight:600;letter-spacing:.02em;color:#30A66D">CURRENT OFFER · SAVE ₹3,990</div><div class="u">600 · 11–12px · green</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHAPE -->
+<section class="sec" id="shape">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">04 / Shape &amp; elevation</span>
+      <h2>Pills for actions. Soft rectangles for containers.</h2>
+      <p>Two shapes, one rule. Nothing else. Shadows are cool, blue-grey and never darker than 22%.</p>
+    </div>
+    <div class="shape-grid reveal">
+      <div class="shape"><div class="box" style="border-radius:9999px">9999px</div><div><div class="v">Pill</div><div class="lbl">Every button, chip, status</div></div></div>
+      <div class="shape"><div class="box" style="border-radius:28px">28px</div><div><div class="v">Card</div><div class="lbl">Pricing, features, testimonials</div></div></div>
+      <div class="shape"><div class="box" style="border-radius:40px">40px</div><div><div class="v">Panel</div><div class="lbl">Hero card, footer top</div></div></div>
+      <div class="shape"><div class="box" style="border-radius:16px">16px</div><div><div class="v">Control</div><div class="lbl">Inputs, inner tiles</div></div></div>
+    </div>
+    <div class="shadow-grid reveal">
+      <div class="shadow"><div class="demo"></div><div class="lbl"><b>shadow-card</b><br>0 18px 44px · 5%</div></div>
+      <div class="shadow"><div class="demo"></div><div class="lbl"><b>shadow-soft</b><br>0 10px 30px · 10%</div></div>
+      <div class="shadow"><div class="demo"></div><div class="lbl"><b>shadow-float</b><br>0 7px 12px · 14%</div></div>
+      <div class="shadow"><div class="demo"></div><div class="lbl"><b>shadow-green</b><br>0 5px 12px · 45% + 4px ring</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPONENTS -->
+<section class="sec" id="components">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">05 / Components</span>
+      <h2>The product is the component library.</h2>
+      <p>Pill buttons, a six-icon tool rail, model chips, a three-column pricing module, and a 420ms accordion.</p>
+    </div>
+    <div class="comp-grid reveal">
+      <div class="comp">
+        <div class="lbl">Buttons · live</div>
+        <div class="pill-row">
+          <a class="pill pill-dark" href="#components">Start using AI Fiesta <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a class="pill pill-light" href="#components">View live deployments</a>
+          <a class="pill-green" href="#components">Get it at ₹999/month <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <div class="lbl" style="margin-top:24px">Model chips</div>
+        <div class="chips">
+          <span class="chip"><span class="m">G</span>GPT-5.5</span>
+          <span class="chip"><span class="m">C</span>Claude Opus 4.8</span>
+          <span class="chip"><span class="m">G</span>Gemini 3.1 Pro</span>
+          <span class="chip"><span class="m">D</span>DeepSeek V4</span>
+          <span class="chip"><span class="m">Q</span>Qwen 3.5</span>
+        </div>
+        <div class="lbl" style="margin-top:24px">Segmented control</div>
+        <div class="seg" id="seg">
+          <button class="on">Marketers</button><button>Professionals</button><button>Students</button><button>Founders</button>
+        </div>
+      </div>
+
+      <div class="comp">
+        <div class="lbl">Pricing card · live toggle</div>
+        <div class="price-card sel">
+          <div class="price-inner">
+            <div class="price-top"><span>Pay once a year</span><span class="save">Save ₹3,990</span></div>
+            <div class="price-num" id="priceNum">₹7,999 <small>/year</small></div>
+            <div class="price-note" id="priceNote">Just ₹667/month, billed yearly</div>
+            <div class="buy">Buy Now</div>
+            <div class="gift">🎁 Get 4x of everything <span style="font-weight:400">· free domain 1 year</span></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="pill pill-light pill-sm" style="flex:1 1 120px;min-width:0;height:34px;font-size:12px" data-plan="monthly">Monthly ₹999</button>
+          <button class="pill pill-dark pill-sm" style="flex:1 1 120px;min-width:0;height:34px;font-size:12px" data-plan="yearly">Yearly ₹7,999</button>
+        </div>
+      </div>
+
+      <div class="comp">
+        <div class="lbl">FAQ accordion · live</div>
+        <div class="acc">
+          <div class="acc-item open">
+            <button class="acc-q" aria-expanded="true">What is AI Fiesta? <span class="ic"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></button>
+            <div class="acc-a">AI Fiesta is an AI Super App that unites 100+ Premium AI models with four built-in creation studios: images, video, website and presentation generation, along with different chat modes.</div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-q" aria-expanded="false">Can I use AI Fiesta on mobile? <span class="ic"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></button>
+            <div class="acc-a">Yes. AI Fiesta is available on the web, iOS and Android. Your plan and history stay in sync.</div>
+          </div>
+          <div class="acc-item">
+            <button class="acc-q" aria-expanded="false">Does it support file uploads? <span class="ic"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></button>
+            <div class="acc-a">Yes — documents, images and PDFs can be attached to a chat and used as context across supported models.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp">
+        <div class="lbl">Mobile buy bar · live</div>
+        <div class="sticky-demo">
+          <div class="cell"><span>Monthly</span><b>₹999</b></div>
+          <div class="cell on"><span>Yearly</span><b>₹7,999</b></div>
+          <div class="buy2">Buy Now →</div>
+        </div>
+        <div class="lbl" style="margin-top:24px">Tool rail</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <span style="width:44px;height:44px;border-radius:16px;background:#fff;border:1px solid var(--line);display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B706C" stroke-width="1.5"><rect x="3" y="5" width="8" height="14" rx="2"/><rect x="13" y="5" width="8" height="14" rx="2"/></svg></span>
+          <span style="width:44px;height:44px;border-radius:16px;background:var(--mint);border:1px solid var(--mint);display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E6B47" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18"/></svg></span>
+          <span style="width:44px;height:44px;border-radius:16px;background:#fff;border:1px solid var(--line);display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B706C" stroke-width="1.5"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+          <span style="width:44px;height:44px;border-radius:16px;background:#fff;border:1px solid var(--line);display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B706C" stroke-width="1.5"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3z"/></svg></span>
+          <span style="width:44px;height:44px;border-radius:16px;background:#fff;border:1px solid var(--line);display:grid;place-items:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B706C" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOTION -->
+<section class="sec" id="motion">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">06 / Motion</span>
+      <h2>Vertical, gentle, short.</h2>
+      <p>Content enters by sliding up 10–24px and fading. Panels change in 640ms. Ambient loops take 2.2s or longer. Nothing flies in from the sides.</p>
+    </div>
+    <div class="motion-grid reveal">
+      <div class="demo-card"><span class="lbl">Soft fade · 420ms</span><div class="stage"><div class="fade-stage"><div class="n" id="fadeNum">₹7,999</div></div></div><button class="pill pill-light pill-sm" id="fadeBtn" style="height:32px;font-size:11px">Change price</button></div>
+      <div class="demo-card"><span class="lbl">Panel slide · 640ms</span><div class="stage"><div class="slide-stage"><div class="s" id="slideStage">Website Builder</div></div></div><button class="pill pill-light pill-sm" id="slideBtn" style="height:32px;font-size:11px">Next tool</button></div>
+      <div class="demo-card"><span class="lbl">Model marquee · 26s (demo)</span><div class="stage"><div class="mm"><div class="tr"><span>GPT-5.5</span><span>Claude Opus 4.8</span><span>Gemini 3.1 Pro</span><span>DeepSeek V4</span><span>Qwen 3.5</span><span>GPT-5.5</span><span>Claude Opus 4.8</span><span>Gemini 3.1 Pro</span><span>DeepSeek V4</span><span>Qwen 3.5</span></div></div></div></div>
+      <div class="demo-card"><span class="lbl">Ambient dots · 1.6s</span><div class="stage"><div class="dot-stage"><i></i><i></i><i></i><i></i></div></div><span style="font-size:10px;color:#8A8F8B;text-align:center">One ambient loop per module</span></div>
+    </div>
+    <div style="overflow-x:auto" class="reveal">
+      <table class="motion-table">
+        <thead><tr><th>Keyframe</th><th>Timing</th><th>Behaviour</th><th>Where</th></tr></thead>
+        <tbody>
+          <tr><td>soft-fade</td><td>420ms cubic-bezier(.33,1,.68,1)</td><td>opacity 0→1, translateY(10px→0)</td><td>Price change, FAQ category</td></tr>
+          <tr><td>workflow-stage-in / out</td><td>640ms</td><td>opacity 0→1 / 1→0</td><td>Hero product panel</td></tr>
+          <tr><td>marquee-left</td><td>175–178s linear ∞</td><td>translateX(0→−50%)</td><td>Model rows</td></tr>
+          <tr><td>marquee-right</td><td>187s linear ∞</td><td>translateX(−50%→0)</td><td>Model rows</td></tr>
+          <tr><td>logo-marquee-scroll</td><td>40s linear ∞</td><td>translateX(0→−50%)</td><td>Customer logos</td></tr>
+          <tr><td>badge-pop</td><td>250ms cubic-bezier(.22,.61,.36,1)</td><td>scale(.6→1), opacity 0→1</td><td>Save ₹3,990 badge</td></tr>
+          <tr><td>gift-halo / gift-dance</td><td>2.2s ease-in-out ∞</td><td>halo scale/opacity, icon dance</td><td>Gift strip</td></tr>
+          <tr><td>sticky-cta-slide</td><td>300ms</td><td>opacity 0→1, translateY(7px→0)</td><td>Mobile buy bar</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="bcard wide reveal" style="margin-top:16px;background:linear-gradient(rgba(229,246,234,.65),rgba(255,255,255,.9));border-color:#D8EFDF">
+      <div class="n">HERO CHOREOGRAPHY · MEASURED FROM FRAMES</div>
+      <h3>Six icons. One window. A vertical stage.</h3>
+      <p style="max-width:800px">Selecting a tool does not swap the whole panel. The label, headline and product window slide vertically as one stage: old content exits upward, new content enters from below, over 640ms with cubic-bezier(.22,.7,.28,1). The gradient panel stays fixed, so the page never jumps. The active icon becomes a mint pill with a 4px white ring and a tray notch pointing at the window.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PAGES -->
+<section class="sec" id="pages">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">07 / Page patterns</span>
+      <h2>Seven routes. One visual grammar.</h2>
+      <p>Home is the fullest expression. Enterprise adds proof and copy. Legal strips everything back to type.</p>
+    </div>
+    <div class="gallery reveal">
+      <a class="shot wide" href="../screenshots/aifiesta-ai/01-aifiesta-ai-full.png" target="_blank" rel="noopener">
+        <div class="img"><img src="../screenshots/aifiesta-ai/01-aifiesta-ai-fold.png" alt="AI Fiesta home hero"></div>
+        <div class="cap"><div><b>Home — /</b><span>MINT HERO · TOOL RAIL · PRICING · BENTO</span></div><em>8,389px</em></div>
+      </a>
+      <a class="shot" href="../screenshots/aifiesta-ai/02-aifiesta-ai-enterprise-full.png" target="_blank" rel="noopener">
+        <div class="img"><img src="../screenshots/aifiesta-ai/02-aifiesta-ai-enterprise-fold.png" alt="AI Fiesta enterprise page"></div>
+        <div class="cap"><div><b>Enterprise</b><span>B2B VARIANT · SAME GRAMMAR</span></div><em>9,768px</em></div>
+      </a>
+      <a class="shot" href="../screenshots/aifiesta-ai/sec-03-pricing.png" target="_blank" rel="noopener">
+        <div class="img"><img src="../screenshots/aifiesta-ai/sec-03-pricing.png" alt="AI Fiesta pricing section"></div>
+        <div class="cap"><div><b>Pricing</b><span>COMPARISON · MONTHLY · YEARLY</span></div><em>SECTION</em></div>
+      </a>
+      <a class="shot" href="../screenshots/aifiesta-ai/sec-05-features.png" target="_blank" rel="noopener">
+        <div class="img"><img src="../screenshots/aifiesta-ai/sec-05-features.png" alt="AI Fiesta features bento"></div>
+        <div class="cap"><div><b>Features bento</b><span>AUTO MODE · CONSENSUS</span></div><em>SECTION</em></div>
+      </a>
+      <a class="shot" href="../screenshots/aifiesta-ai/state-04-website-builder-tab.png" target="_blank" rel="noopener">
+        <div class="img"><img src="../screenshots/aifiesta-ai/state-04-website-builder-tab.png" alt="AI Fiesta website builder tab"></div>
+        <div class="cap"><div><b>Hero tool state</b><span>WEBSITE BUILDER SELECTED</span></div><em>STATE</em></div>
+      </a>
+      <a class="shot" href="../screenshots/aifiesta-ai/03-aifiesta-ai-terms-full.png" target="_blank" rel="noopener">
+        <div class="img"><img src="../screenshots/aifiesta-ai/03-aifiesta-ai-terms-fold.png" alt="AI Fiesta terms page"></div>
+        <div class="cap"><div><b>Legal</b><span>62PX H1 · 720PX PROSE</span></div><em>7,922px</em></div>
+      </a>
+      <a class="shot" href="../screenshots/aifiesta-ai/mobile-01-home-fold.png" target="_blank" rel="noopener">
+        <div class="img" style="background:#F2F8F4"><img src="../screenshots/aifiesta-ai/mobile-01-home-fold.png" alt="AI Fiesta mobile home" style="object-fit:contain"></div>
+        <div class="cap"><div><b>Mobile home</b><span>390 × 844 · STICKY BUY BAR</span></div><em>MOBILE</em></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- EVIDENCE -->
+<section class="sec" id="evidence">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">08 / Evidence</span>
+      <h2>Captured live, kept intact.</h2>
+      <p>44 screenshots, 2 videos, 23 extracted frames and 4 token dumps across 7 routes.</p>
+    </div>
+    <div class="stats reveal">
+      <div class="stat"><b>7</b><span>Routes visited</span></div>
+      <div class="stat"><b>44</b><span>Screenshots</span></div>
+      <div class="stat"><b>23</b><span>Motion frames</span></div>
+      <div class="stat"><b>2</b><span>Videos</span></div>
+    </div>
+    <div class="evidence reveal">
+      <div class="ev"><img src="../screenshots/aifiesta-ai/frames/contact-sheet-scroll.png" alt="Contact sheet of the AI Fiesta full-page scroll"><div class="cap"><span>FULL-PAGE SCROLL · 8 FRAMES / 1.5S</span><span>aifiesta-home-scroll.mp4</span></div></div>
+      <div class="ev"><img src="../screenshots/aifiesta-ai/frames/contact-sheet-tabs.png" alt="Contact sheet of the hero tool switching"><div class="cap"><span>HERO TOOL SWITCHING · 12 FRAMES / 1S</span><span>aifiesta-hero-tabs.mp4</span></div></div>
+    </div>
+    <div class="bcard reveal" style="margin-top:16px">
+      <div class="n">FILES</div>
+      <h3>Everything is in the repo</h3>
+      <p style="margin-top:8px"><code style="font-family:ui-monospace,monospace;font-size:12px">design-aifiesta.md</code> · <code style="font-family:ui-monospace,monospace;font-size:12px">screenshots/aifiesta-ai/</code> · <code style="font-family:ui-monospace,monospace;font-size:12px">videos/</code> · <code style="font-family:ui-monospace,monospace;font-size:12px">data/aifiesta/</code> · <code style="font-family:ui-monospace,monospace;font-size:12px">data/aifiesta-keyframes.json</code></p>
+      <p style="margin-top:10px;font-size:13px"><a href="../videos/aifiesta-home-scroll.mp4" style="color:#1E6B47;font-weight:600;text-decoration:underline;text-underline-offset:3px">▶ home scroll (12.6s)</a> &nbsp;·&nbsp; <a href="../videos/aifiesta-hero-tabs.mp4" style="color:#1E6B47;font-weight:600;text-decoration:underline;text-underline-offset:3px">▶ hero tool tabs (12.8s)</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- TOKENS -->
+<section class="sec" id="tokens">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">09 / Tokens</span>
+      <h2>The whole system, as CSS.</h2>
+      <p>One family, two shapes, four gradients. Copy the base layer.</p>
+    </div>
+    <div class="code reveal">
+      <div class="bar"><span>tokens.css</span><span>AI FIESTA · v1.0</span></div>
+<pre><span class="c">/* colour */</span>
+<span class="k">--background</span>: <span class="v">oklch(99.5% .003 100)</span>;
+<span class="k">--foreground</span>: <span class="v">oklch(18% .025 250)</span>;
+<span class="k">--card</span>: <span class="v">oklch(100% 0 0)</span>;
+<span class="k">--primary</span>: <span class="v">oklch(61% .18 153)</span>;      <span class="c">/* #30A66D */</span>
+<span class="k">--secondary</span>: <span class="v">oklch(96% .012 160)</span>;
+<span class="k">--muted</span>: <span class="v">oklch(96.5% .008 240)</span>;
+<span class="k">--muted-foreground</span>: <span class="v">oklch(51% .025 250)</span>;
+<span class="k">--accent</span>: <span class="v">oklch(93% .035 201)</span>;
+<span class="k">--border</span>: <span class="v">oklch(90% .012 240)</span>;
+<span class="k">--ring</span>: <span class="v">oklch(61% .18 153)</span>;
+<span class="k">--brand-soft</span>: <span class="v">oklch(96.5% .045 155)</span>;
+<span class="k">--brand-blue</span>: <span class="v">oklch(89% .055 215)</span>;
+<span class="k">--brand-green</span>: <span class="v">oklch(66% .17 151)</span>;
+<span class="k">--dark-panel</span>: <span class="v">oklch(20.5% .028 251)</span>;
+<span class="k">--text</span>: <span class="v">#0A0A0A</span>;
+<span class="k">--text-muted</span>: <span class="v">#737373</span>;
+<span class="k">--star</span>: <span class="v">#F6B100</span>;
+
+<span class="c">/* type */</span>
+<span class="k">--font-sans</span>: <span class="v">"Google Sans Flex", ui-sans-serif, system-ui, sans-serif</span>;
+<span class="k">--font-mono</span>: <span class="v">ui-monospace, SFMono-Regular, Menlo, monospace</span>;
+
+<span class="c">/* shape */</span>
+<span class="k">--radius</span>: <span class="v">.75rem</span>;
+<span class="k">--radius-card</span>: <span class="v">28px</span>;
+<span class="k">--radius-panel</span>: <span class="v">40px</span>;
+<span class="k">--radius-pill</span>: <span class="v">9999px</span>;
+
+<span class="c">/* layout */</span>
+<span class="k">--section-gap</span>: <span class="v">120px</span>;
+<span class="k">--content-max</span>: <span class="v">1360px</span>;
+<span class="k">--section-max</span>: <span class="v">1440px</span>;
+<span class="k">--gutter</span>: <span class="v">40px</span>;
+
+<span class="c">/* gradients */</span>
+<span class="k">--gradient-hero</span>: <span class="v">linear-gradient(rgba(229,246,234,.6) -25.844%, rgba(255,255,255,.6) 63.658%)</span>;
+<span class="k">--gradient-showcase</span>: <span class="v">linear-gradient(145deg, #A9E9C9 0%, #62C6DF 55%, #CFC1F2 100%)</span>;
+<span class="k">--gradient-brand</span>: <span class="v">linear-gradient(90deg, #39D47A 4%, #16BFA6 50%, #009CD0 96%)</span>;
+
+<span class="c">/* motion */</span>
+<span class="k">--ease-out</span>: <span class="v">cubic-bezier(0,0,.2,1)</span>;
+<span class="k">--ease-panel</span>: <span class="v">cubic-bezier(.22,.7,.28,1)</span>;
+<span class="k">--dur-fast</span>: <span class="v">.15s</span>;
+<span class="k">--dur-slow</span>: <span class="v">.3s</span>;
+<span class="k">--dur-content</span>: <span class="v">.42s</span>;
+<span class="k">--dur-panel</span>: <span class="v">.64s</span>;</pre>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="brand" style="font-size:22px;margin-bottom:12px">
+          <svg class="atom" viewBox="0 0 40 40" fill="none" aria-hidden="true" style="width:28px;height:28px"><circle cx="20" cy="20" r="4.2" fill="#30A66D"/><ellipse cx="20" cy="20" rx="16" ry="6.4" stroke="#16BFA6" stroke-width="2" transform="rotate(30 20 20)"/><ellipse cx="20" cy="20" rx="16" ry="6.4" stroke="#39D47A" stroke-width="2" transform="rotate(90 20 20)"/><ellipse cx="20" cy="20" rx="16" ry="6.4" stroke="#009CD0" stroke-width="2" transform="rotate(150 20 20)"/></svg>
+          AI Fiesta
+        </div>
+        <p style="font-size:12px;color:#8A8F8B;max-width:320px;line-height:1.6">A design-system study of aifiesta.ai. Mint gradients, one geometric sans, pill actions and gentle vertical motion — extracted from the live site on 5 November 2026.</p>
+      </div>
+      <div>
+        <div style="display:flex;gap:8px;margin-bottom:14px"><span class="store"> App Store</span><span class="store">▶ Play Store</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;color:#6B706C">
+          <a href="#principles">Principles</a><a href="#color">Colour</a><a href="#type">Type</a><a href="#components">Components</a><a href="#motion">Motion</a><a href="../design-aifiesta.md">design-aifiesta.md</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-links">
+      <a href="../vobiz-design-system/index.html">Other system · Vobiz →</a>
+      <a href="../HTML/design-system-audit.html">Audit report</a>
+      <a href="../design.md">Index</a>
+      <span style="color:#B5B9B6">support@aifiesta.ai</span>
+    </div>
+    <div class="giant" aria-hidden="true">AI Fiesta</div>
+    <div class="foot-bottom">
+      <span>© 2026 DESIGN SYSTEM STUDY · NOT AFFILIATED WITH AI FIESTA</span>
+      <span>CAPTURED 05.11.2026 · 7 ROUTES · 1440×900 / 390×844</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // hero tool rail
+  const tools = {
+    compare:{label:'Compare Mode',addr:'aifiesta.ai / compare',q:'Compare GPT-5.5, Claude Opus 4.8 and Gemini 3.1 Pro on one prompt.',a:'Side-by-side columns with a shared prompt bar, per-model latency and a one-click consensus.',b:'Best for evaluating models before committing a workflow.'},
+    web:{label:'Website Builder',addr:'aifiesta.ai / website-builder',q:'Build a launch page for Aurelia, a design studio.',a:'Hero, three services, selected work, and a contact block. Type-led, warm white, one accent.',b:'Editorial layout with a large statement, case-study grid and a quiet footer. Ships to a real URL.'},
+    slides:{label:'Slides',addr:'aifiesta.ai / slides',q:'Turn this launch brief into a 12-slide deck.',a:'A cover, a market slide, three product slides, a roadmap and a closing ask.',b:'Narrative arc with speaker notes and a consistent visual system.'},
+    video:{label:'Video Studio',addr:'aifiesta.ai / video-studio',q:'A 15-second product teaser, soft morning light.',a:'Shot list, camera moves and a 1080p cut ready to post.',b:'Three variations with different pacing and music cues.'},
+    image:{label:'Image Studio',addr:'aifiesta.ai / image-studio',q:'A campaign visual: mint gradient, product floating.',a:'Four directions from one prompt, with background and object edits.',b:'Print-ready at 4K with a transparent cutout.'},
+    research:{label:'Deep Research',addr:'aifiesta.ai / deep-research',q:'Map the AI subscription market in Southeast Asia.',a:'A sourced brief with market size, competitors and pricing bands.',b:'A 20-page report with citations and a data appendix.'}
+  };
+  const stageText=document.getElementById('stageText'), addrText=document.getElementById('addrText'), heroQ=document.getElementById('heroQ'), heroCols=document.getElementById('heroCols');
+  document.querySelectorAll('.tool').forEach(t=>{
+    t.addEventListener('click',()=>{
+      document.querySelectorAll('.tool').forEach(x=>{x.classList.remove('on');x.setAttribute('aria-selected','false')});
+      t.classList.add('on');t.setAttribute('aria-selected','true');
+      const d=tools[t.dataset.tool];
+      // vertical stage: out, swap, in
+      const stage=document.querySelector('.stage');
+      stage.style.transition='opacity .32s cubic-bezier(.22,.7,.28,1), transform .32s cubic-bezier(.22,.7,.28,1)';
+      stage.style.opacity=0; stage.style.transform='translateY(14px)';
+      setTimeout(()=>{
+        stageText.textContent=d.label; addrText.textContent=d.addr; heroQ.textContent=d.q;
+        heroCols.innerHTML='<div class="ans"><div class="who"><span class="dot"></span><b>GPT-5.5</b> · 2.1s</div><p>'+d.a+'</p><span class="tag">Option A</span></div><div class="ans"><div class="who"><span class="dot"></span><b>Claude Opus 4.8</b> · 2.8s</div><p>'+d.b+'</p><span class="tag">Option B</span></div>';
+        stage.style.opacity=1; stage.style.transform='none';
+      },180);
+    });
+  });
+
+  // pricing toggle
+  const priceNum=document.getElementById('priceNum'), priceNote=document.getElementById('priceNote');
+  document.querySelectorAll('[data-plan]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const yearly=b.dataset.plan==='yearly';
+      document.querySelectorAll('[data-plan]').forEach(x=>{x.classList.remove('pill-dark');x.classList.add('pill-light')});
+      b.classList.remove('pill-light');b.classList.add('pill-dark');
+      priceNum.innerHTML = yearly ? '₹7,999 <small>/year</small>' : '₹999 <small>/month</small>';
+      priceNote.textContent = yearly ? 'Just ₹667/month, billed yearly' : 'That\'s ₹11,988 a year';
+      priceNum.classList.remove('fade'); void priceNum.offsetWidth; priceNum.classList.add('fade');
+    });
+  });
+
+  // accordion
+  document.querySelectorAll('.acc-q').forEach(q=>{
+    q.addEventListener('click',()=>{
+      const item=q.closest('.acc-item'); const open=item.classList.contains('open');
+      document.querySelectorAll('.acc-item').forEach(i=>{i.classList.remove('open');i.querySelector('.acc-q').setAttribute('aria-expanded','false')});
+      if(!open){item.classList.add('open');q.setAttribute('aria-expanded','true')}
+    });
+  });
+
+  // segmented
+  document.querySelectorAll('#seg button').forEach(b=>{
+    b.addEventListener('click',()=>{document.querySelectorAll('#seg button').forEach(x=>x.classList.remove('on'));b.classList.add('on')});
+  });
+
+  // motion demos
+  const prices=['₹7,999','₹999','₹7,999','₹999']; let pi=0;
+  document.getElementById('fadeBtn').addEventListener('click',()=>{
+    pi=(pi+1)%prices.length; const n=document.getElementById('fadeNum');
+    n.textContent=prices[pi]; n.classList.remove('fade'); void n.offsetWidth; n.classList.add('fade');
+  });
+  const labels=['Website Builder','Slides','Video Studio','Image Studio','Deep Research','Compare Mode']; let si=0;
+  document.getElementById('slideBtn').addEventListener('click',()=>{
+    const el=document.getElementById('slideStage'); si=(si+1)%labels.length;
+    el.style.transform='translateY(-100%)'; el.style.opacity=0;
+    setTimeout(()=>{el.textContent=labels[si];el.style.transition='none';el.style.transform='translateY(100%)';requestAnimationFrame(()=>{el.style.transition='transform .64s cubic-bezier(.22,.7,.28,1),opacity .64s cubic-bezier(.22,.7,.28,1)';el.style.transform='none';el.style.opacity=1})},240);
+  });
+
+  // reveal
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
