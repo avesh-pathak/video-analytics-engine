@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 
 import { ArchitectureOverview } from "@/components/home/architecture-overview";
-import { BentoFeatures } from "@/components/home/bento-features";
-import { DashboardPreview } from "@/components/home/dashboard-preview";
-import { EngineFlow } from "@/components/home/engine-flow";
-import { EventMarquee } from "@/components/home/event-marquee";
 import { FaqSection } from "@/components/home/faq-section";
 import { FinalCta } from "@/components/home/final-cta";
 import { Hero } from "@/components/home/hero";
 import { MetricsSection } from "@/components/home/metrics-section";
+import { TechStack } from "@/components/home/tech-stack";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { SiteHeader } from "@/components/marketing/site-header";
 
@@ -44,12 +41,9 @@ export default function HomePage() {
       <SiteHeader />
       <main>
         <Hero />
-        <EventMarquee />
         <ArchitectureOverview />
-        <BentoFeatures />
+        <TechStack />
         <MetricsSection />
-        <DashboardPreview />
-        <EngineFlow />
         <FaqSection />
         <FinalCta />
       </main>

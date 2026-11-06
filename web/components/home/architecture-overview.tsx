@@ -1,192 +1,85 @@
 import Link from "next/link";
-import type { ComponentType } from "react";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Database,
-  Play,
-  RefreshCcw,
-  Server,
-  ShieldCheck,
-  Wrench,
-} from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 
-import { Reveal } from "@/components/marketing/reveal";
-import { Button } from "@/components/ui/button";
-import { site } from "@/lib/site";
-import { cn } from "@/lib/utils";
-
-type Node = {
-  label: string;
-  icon: ComponentType<{ className?: string }>;
-};
-
-type Path = {
-  label: string;
-  note: string;
-  dot: string;
-  nodes: Node[];
-};
-
-const paths: Path[] = [
-  {
-    label: "Write",
-    note: "Synchronous and transactional.",
-    dot: "bg-green",
-    nodes: [
-      { label: "Client ranges", icon: Play },
-      { label: "One transaction", icon: Server },
-      { label: "Log + projection", icon: Database },
-    ],
-  },
-  {
-    label: "Read",
-    note: "Projection only.",
-    dot: "bg-sky",
-    nodes: [
-      { label: "Projection", icon: Database },
-      { label: "Read API", icon: Server },
-      { label: "Surface", icon: ArrowUpRight },
-    ],
-  },
-  {
-    label: "Repair",
-    note: "Bounded and verified.",
-    dot: "bg-amber",
-    nodes: [
-      { label: "Audit", icon: ShieldCheck },
-      { label: "Repair", icon: Wrench },
-      { label: "Verify", icon: RefreshCcw },
-    ],
-  },
-];
-
-const facts = [
-  {
-    title: "Evidence, not a scalar.",
-    copy: "The client sends intervals, never a watched-seconds total.",
-  },
-  {
-    title: "One authoritative calculation.",
-    copy: "The server validates, merges and clips the ranges itself.",
-  },
-  {
-    title: "A projection that proves itself.",
-    copy: "Audit measures drift. Repair bounds the fix. Verify returns zero.",
-  },
+const steps = [
+  { title: "Playback events", copy: "Client ranges + durable outbox" },
+  { title: "Server validation", copy: "Check bounds + remove duplicates" },
+  { title: "Evidence + totals", copy: "Saved together in one transaction" },
+  { title: "Read & repair", copy: "Query totals, audit, rebuild" },
 ];
 
 export function ArchitectureOverview() {
   return (
-    <section id="architecture" className="pt-[104px] sm:pt-[120px]">
-      <div className="page-container">
-        <Reveal className="mx-auto max-w-[760px] text-center">
-          <span className="inline-flex items-center rounded-full bg-mint px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-green-deep">
-            02 / Architecture
-          </span>
-          <h2 className="mt-4 text-h2 font-medium text-ink">
-            One event in.
-            <br />
-            One number out.
-          </h2>
-          <p className="mx-auto mt-4 max-w-[600px] text-[16px] leading-7 text-muted-ink sm:text-[17px]">
-            Watchline is an evidence system, not a counter. Three paths keep the number
-            defensible from the first playback event to the last audit.
-          </p>
-        </Reveal>
-
-        <Reveal className="mt-10">
-          <div className="rounded-card border border-line bg-card p-5 shadow-card sm:p-7 lg:p-9">
-            <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:gap-14">
-              <div className="flex flex-col">
-                <p className="max-w-[360px] text-[15px] leading-6 text-ink">
-                  The client sends intervals. The server recomputes the watched seconds.
-                  The projection can always be audited, rebuilt and repaired.
-                </p>
-
-                <div className="mt-6 space-y-3">
-                  {facts.map((fact, index) => (
-                    <div key={fact.title} className="flex gap-3">
-                      <span className="mt-0.5 font-mono text-[8px] font-semibold text-subtle-ink">
-                        0{index + 1}
-                      </span>
-                      <div>
-                        <div className="text-[11px] font-semibold text-ink">{fact.title}</div>
-                        <p className="mt-0.5 text-[10px] leading-5 text-muted-ink">{fact.copy}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-auto flex flex-wrap items-center gap-4 pt-7">
-                  <Button asChild size="sm">
-                    <Link href="/architecture">
-                      Read the full architecture
-                      <ArrowRight className="size-3.5" />
-                    </Link>
-                  </Button>
-                  <Link
-                    href={site.links.github}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1 text-[10.5px] font-semibold text-muted-ink underline-offset-4 transition hover:text-ink hover:underline"
-                  >
-                    Repository
-                    <ArrowUpRight className="size-3" />
-                  </Link>
-                </div>
-              </div>
-
-              <div className="divide-y divide-line">
-                {paths.map((path) => (
-                  <div key={path.label} className="py-4 first:pt-0 last:pb-0">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <div className="flex items-center gap-2">
-                        <span className={cn("size-1.5 rounded-full", path.dot)} />
-                        <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-ink">
-                          {path.label} path
-                        </span>
-                      </div>
-                      <span className="text-[9px] text-subtle-ink">{path.note}</span>
-                    </div>
-
-                    <div className="mt-2.5 flex flex-col items-stretch gap-1.5 sm:flex-row sm:items-center">
-                      {path.nodes.map((node, index) => {
-                        const Icon = node.icon;
-                        return (
-                          <div key={node.label} className="contents">
-                            <div className="flex flex-1 items-center gap-2 rounded-full border border-line bg-surface-soft px-3 py-2">
-                              <Icon className="size-3 shrink-0 text-muted-ink" />
-                              <span className="truncate text-[9.5px] font-medium text-ink">
-                                {node.label}
-                              </span>
-                            </div>
-                            {index < path.nodes.length - 1 ? (
-                              <ArrowRight className="mx-auto size-3 shrink-0 rotate-90 text-subtle-ink sm:rotate-0" />
-                            ) : null}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="mt-6 flex flex-col gap-2 border-t border-line pt-4 text-[9.5px] leading-5 text-muted-ink sm:flex-row sm:items-center sm:justify-between">
-              <span>
-                <span className="font-semibold text-ink">Messages</span> · outbox → topic
-                video.segments → partition subqueues → consumer group
-              </span>
-              <Link
-                href="/architecture#messages"
-                className="inline-flex shrink-0 items-center gap-1 font-semibold text-green-deep underline-offset-4 hover:underline"
-              >
-                Kafka optional · message layer
-                <ArrowRight className="size-3" />
-              </Link>
-            </div>
+    <section id="product" className="pt-24 sm:pt-32">
+      <div id="architecture" className="page-container">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-20">
+          <h2 className="max-w-[520px] text-h2 font-medium text-ink">A watch-time engine<br className="hidden sm:block" /> Not just a counter</h2>
+          <div className="max-w-[560px] space-y-4 text-base leading-7 text-muted-ink">
+            <p>Watchline turns playback events into reliable watch-time metrics. It tracks which parts of a video were watched, how much was rewatched, and how long someone spent watching.</p>
+            <p>The client collects evidence. The server computes the numbers, handles retries, and keeps a log so every total can be audited or rebuilt.</p>
+            <p className="text-sm">It works alongside your video player. This site demonstrates the UI; the repository contains the engine and APIs.</p>
           </div>
-        </Reveal>
+        </div>
+        <h3 className="mt-10 text-base font-medium text-ink">How the pieces connect</h3>
+        <ol aria-label="Watchline architecture flow" className="mt-5 grid grid-cols-1 gap-6 rounded-2xl bg-surface-soft p-6 md:grid-cols-4 md:gap-10 md:p-8">
+          {steps.map((step, index) => (
+            <li key={step.title} className="relative min-w-0">
+              <h4 className="text-base font-medium text-ink">{step.title}</h4>
+              <p className="mt-2 max-w-[240px] text-sm leading-6 text-muted-ink">{step.copy}</p>
+              {index < steps.length - 1 ? <>
+                <ArrowRight className="absolute -right-7 top-1 hidden size-4 text-green md:block" aria-hidden="true" />
+                <ArrowDown className="mt-5 size-4 text-green md:hidden" aria-hidden="true" />
+              </> : null}
+            </li>
+          ))}
+        </ol>
+        <p className="mt-4 max-w-[760px] text-sm leading-6 text-muted-ink">An optional broker handles event delivery after the write. It never decides whether watch time counts.</p>
+        <Link href="/architecture" className="mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-green-deep underline-offset-4 hover:underline">
+          See how it works <ArrowRight className="size-4" aria-hidden="true" />
+        </Link>
+        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
+          <div>
+            <h3 className="text-2xl font-medium tracking-tight text-ink">Built for imperfect playback.</h3>
+            <dl className="mt-6 space-y-6">
+              <div>
+                <dt className="text-base font-medium text-ink">Go offline. Resume later.</dt>
+                <dd className="mt-1 max-w-[520px] text-sm leading-6 text-muted-ink">A durable client outbox queues playback evidence for delivery. Request and segment keys keep retries from adding extra credit.</dd>
+              </div>
+              <div>
+                <dt className="text-base font-medium text-ink">Rewatch without inflating completion.</dt>
+                <dd className="mt-1 max-w-[520px] text-sm leading-6 text-muted-ink">The server merges overlapping ranges. A repeat counts toward total watched, not as new content watched.</dd>
+              </div>
+              <div>
+                <dt className="text-base font-medium text-ink">Check a number. Rebuild if needed.</dt>
+                <dd className="mt-1 max-w-[520px] text-sm leading-6 text-muted-ink">The append-only log keeps the evidence behind every total. Audit for drift, preview a repair, then apply and verify it.</dd>
+              </div>
+            </dl>
+          </div>
+          <figure className="self-start rounded-2xl border border-line bg-card p-6 sm:p-8">
+            <figcaption className="text-base font-medium text-ink">A rewatch, made visible.</figcaption>
+            <p className="mt-2 text-sm leading-6 text-muted-ink">Watch 0–20s, then 10–30s of a 60-second video.</p>
+            <div className="mt-7 space-y-5" aria-hidden="true">
+              {[
+                { label: "First watch", start: 0, width: 100 / 3, color: "bg-green" },
+                { label: "Watch again", start: 100 / 6, width: 100 / 3, color: "bg-teal" },
+                { label: "Unique watched", start: 0, width: 50, color: "bg-green-deep" },
+              ].map((row) => (
+                <div key={row.label}>
+                  <span className="text-xs text-muted-ink">{row.label}</span>
+                  <div className="relative mt-2 h-2 overflow-hidden rounded-full bg-surface-soft">
+                    <span className={`absolute inset-y-0 rounded-full ${row.color}`} style={{ left: `${row.start}%`, width: `${row.width}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+            <dl className="mt-7 grid grid-cols-3 gap-3 border-t border-line pt-5">
+              {[["Total", "40s"], ["Unique", "30s"], ["Rewatch", "10s"]].map(([label, value]) => (
+                <div key={label}><dt className="text-xs text-muted-ink">{label}</dt><dd className="mt-1 text-2xl font-medium tabular-nums text-ink">{value}</dd></div>
+              ))}
+            </dl>
+            <p className="mt-5 text-xs leading-5 text-muted-ink">Illustrative example · 50% completion, not 67%.</p>
+          </figure>
+        </div>
       </div>
     </section>
   );

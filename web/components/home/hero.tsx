@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 
 import { HeroPreview, type PreviewTab } from "@/components/home/hero-preview";
-import { GithubIcon } from "@/components/brand/social-icons";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -55,25 +54,13 @@ export function Hero() {
             animate={reduce ? undefined : { opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 0.61, 0.36, 1] }}
           >
-            <span className="inline-flex items-center gap-2 rounded-full border border-line bg-card/80 px-2 py-1.5 pr-3.5 text-[12px] font-medium text-muted-ink shadow-[0_1px_2px_rgba(13,15,13,0.04)] backdrop-blur">
-              <span className="grid size-5 place-items-center rounded-full bg-mint text-green-deep">
-                <ShieldCheck className="size-3" />
-              </span>
-              The watch-time engine
-              <span className="h-3 w-px bg-line" />
-              <span className="text-[11px] font-semibold text-green-deep">v1.0</span>
-            </span>
-
-            <h1 className="mt-6 max-w-[880px] text-hero font-medium text-ink">
-              Every second counted.
-              <br />
-              Every number defended<span className="text-green">.</span>
+            <h1 className="max-w-[880px] text-hero font-medium text-ink">
+              Every second counted
             </h1>
 
-            <p className="mt-5 max-w-[720px] text-[17px] leading-7 text-muted-ink sm:text-[19px] sm:leading-8">
-              Watchline turns untrusted playback events into watch time your team can stand
-              behind. Recomputed on the server, deduplicated twice, and reconciled against an
-              append-only evidence log.
+            <p className="mt-5 max-w-[520px] text-[17px] leading-7 text-muted-ink sm:text-[19px] sm:leading-8">
+              A video analytics engine that computes watch time from evidence,
+              not a number you take on trust.
             </p>
 
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -83,33 +70,12 @@ export function Hero() {
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
-              <Button asChild variant="secondary" size="lg" className="h-12 px-6 text-[15px]">
-                <Link href="https://github.com/avesh-pathak/video-analytics-engine" target="_blank" rel="noreferrer">
-                  <GithubIcon className="size-4" />
-                  View source
-                </Link>
-              </Button>
-            </div>
-
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-              {[
-                ["10", "media events"],
-                ["2", "dedupe layers"],
-                ["0", "client totals trusted"],
-              ].map(([value, label]) => (
-                <span
-                  key={label}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-line bg-card/55 px-3 py-1.5 text-[11px] font-medium text-muted-ink backdrop-blur"
-                >
-                  <span className="font-semibold text-green-deep">{value}</span>
-                  {label}
-                </span>
-              ))}
             </div>
           </motion.div>
 
-          <div className="relative z-10 mt-9 flex items-center justify-center gap-2.5 sm:gap-3">
-            {tools.map((tool, index) => {
+          <p className="relative z-10 mt-10 text-center text-xs text-muted-ink">Interactive preview · sample data</p>
+          <div className="relative z-10 mt-4 flex items-center justify-center gap-2.5 sm:gap-3">
+            {tools.map((tool) => {
               const Icon = tool.icon;
               const selected = active === tool.id;
               return (
@@ -123,8 +89,8 @@ export function Hero() {
                       className={cn(
                         "relative grid size-[52px] place-items-center rounded-[18px] border transition-[background-color,border-color,box-shadow,transform] duration-200 ease-soft sm:size-14",
                         selected
-                          ? "border-mint bg-mint text-green-deep shadow-[0_0_0_4px_rgba(255,255,255,0.72),0_8px_18px_rgba(48,166,109,0.14)] dark:shadow-[0_0_0_4px_rgba(11,13,12,0.8),0_8px_18px_rgba(0,0,0,0.3)]"
-                          : "border-line bg-card/85 text-muted-ink backdrop-blur hover:-translate-y-0.5 hover:bg-card hover:shadow-[0_8px_18px_rgba(15,15,26,0.06)]",
+                          ? "border-green bg-mint text-green-deep"
+                          : "border-line bg-card text-muted-ink hover:bg-mint-soft",
                       )}
                     >
                       <Icon className="size-[19px] sm:size-[21px]" />
@@ -172,13 +138,6 @@ export function Hero() {
                 <span className="hidden font-normal text-muted-ink sm:inline">
                   · {activeTool.caption}
                 </span>
-              </div>
-              <div className="absolute right-4 top-3.5 z-10 hidden items-center gap-1.5 rounded-full border border-line/60 bg-card/65 px-2.5 py-1.5 text-[10px] font-medium text-muted-ink backdrop-blur sm:right-6 sm:top-4 sm:inline-flex">
-                <span className="relative flex size-1.5">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-green opacity-55" />
-                  <span className="relative inline-flex size-1.5 rounded-full bg-green" />
-                </span>
-                Interactive preview
               </div>
 
               <div className="overflow-hidden rounded-t-[20px] border border-line bg-card shadow-[0_-1px_0_rgba(255,255,255,0.5),0_28px_60px_rgba(15,15,26,0.17)]">
