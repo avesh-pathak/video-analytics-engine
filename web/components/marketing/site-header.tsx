@@ -6,9 +6,8 @@ import { usePathname } from "next/navigation";
 import { ArrowUpRight, Menu } from "lucide-react";
 
 import { Logo } from "@/components/brand/logo";
-import { GithubIcon } from "@/components/brand/social-icons";
+import { GithubIcon, LinkedinIcon } from "@/components/brand/social-icons";
 import { ThemeToggle } from "@/components/brand/theme-toggle";
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -19,6 +18,16 @@ import {
 } from "@/components/ui/sheet";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
+
+function SocialLinks({ onNavigate, className }: { onNavigate?: () => void; className?: string }) {
+  return (
+    <div className={cn("items-center gap-2", className)}>
+      <Link href={site.links.github} target="_blank" rel="noreferrer" onClick={onNavigate} aria-label="GitHub repository" className="grid size-11 place-items-center rounded-full border border-line bg-card text-ink transition-colors hover:bg-mint-soft"><GithubIcon className="size-4" /></Link>
+      <Link href={site.links.linkedin} target="_blank" rel="noreferrer" onClick={onNavigate} aria-label="Avesh Pathak on LinkedIn" className="grid size-11 place-items-center rounded-full border border-line bg-card text-ink transition-colors hover:bg-mint-soft"><LinkedinIcon className="size-4" /></Link>
+      <Link href={site.links.portfolio} target="_blank" rel="noreferrer" onClick={onNavigate} className="inline-flex h-11 items-center gap-1.5 rounded-full border border-line bg-card px-4 text-sm font-semibold text-ink transition-colors hover:bg-mint-soft">avesh.tech <ArrowUpRight className="size-3.5" aria-hidden="true" /></Link>
+    </div>
+  );
+}
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = React.useState(false);
@@ -99,12 +108,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2.5">
           <ThemeToggle />
-          <Button asChild size="sm" className="hidden h-11 px-4 sm:inline-flex lg:h-10">
-            <Link href={site.links.github} target="_blank" rel="noreferrer">
-              <GithubIcon className="size-3.5" />
-              View source
-            </Link>
-          </Button>
+          <SocialLinks className="hidden sm:flex" />
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
@@ -141,23 +145,7 @@ export function SiteHeader() {
                   ))}
                 </nav>
                 <div className="mt-auto border-t border-line pt-5">
-                  <Button asChild className="w-full">
-                    <Link href={site.links.github} target="_blank" rel="noreferrer" onClick={() => setOpen(false)}>
-                      <GithubIcon className="size-4" />
-                      View source
-                    </Link>
-                  </Button>
-                  <div className="mt-4 flex items-center justify-between text-xs text-muted-ink">
-                    <Link href={site.links.github} target="_blank" rel="noreferrer" className="hover:text-ink">
-                      GitHub
-                    </Link>
-                    <Link href={site.links.linkedin} target="_blank" rel="noreferrer" className="hover:text-ink">
-                      LinkedIn
-                    </Link>
-                    <Link href={site.links.portfolio} target="_blank" rel="noreferrer" className="hover:text-ink">
-                      avesh.tech
-                    </Link>
-                  </div>
+                  <SocialLinks className="flex flex-wrap" onNavigate={() => setOpen(false)} />
                 </div>
               </div>
             </SheetContent>

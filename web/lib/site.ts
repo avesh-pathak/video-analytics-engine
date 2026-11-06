@@ -13,8 +13,6 @@ export const site = {
   nav: [
     { label: "Product", href: "/#product" },
     { label: "Architecture", href: "/architecture" },
-    { label: "Watch math", href: "/architecture#watch-math" },
-    { label: "Messages", href: "/architecture#messages" },
     { label: "FAQ", href: "/#faq" },
   ],
   footer: {
