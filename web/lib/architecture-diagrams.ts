@@ -13,6 +13,15 @@ export const systemDiagram = `flowchart LR
   GROUP -->|"upsert"| PROJ
   PROJ -->|"GET read"| UI["Analytics surface"]`;
 
+// Narrow screens get a compact version of the same two-layer story.
+export const idempotencyDiagramMobile = `sequenceDiagram
+  participant C as Client
+  participant A as API
+  C->>A: heartbeat K1
+  A-->>C: 280 accepted · 20 duplicate
+  C->>A: replay K2 (new session)
+  A-->>C: 0 accepted · 280 duplicate`;
+
 export const idempotencyDiagram = `sequenceDiagram
   participant C as Client
   participant A as API
@@ -54,6 +63,31 @@ export const repairDiagram = `flowchart LR
   AUDIT --> DRY["Dry run - show what<br/>would change"]
   DRY --> APPLY["Bounded apply<br/>keyset paged, per-subject savepoint"]
   APPLY --> VERIFY["Verify - re-audit,<br/>delta must now be 0"]
+  VERIFY --> OK`;
+
+export const systemDiagramMobile = `flowchart TD
+  V["Local video file<br/>never uploaded"] --> SM["Segment machine<br/>10 player events"]
+  SM --> OB["Durable outbox<br/>IndexedDB + mirror"]
+  OB -->|"POST heartbeat + Idempotency-Key"| API["API<br/>parse, sanitize, BEGIN IMMEDIATE"]
+  API -->|"evidence"| SEG["watch_segments<br/>append-only evidence"]
+  API -->|"upsert"| PROJ["subject_progress<br/>materialized projection"]
+  API -->|"same transaction"| OUT["outbox row<br/>transactional hand-off"]
+  SEG -.->|"full recompute<br/>audit and repair"| PROJ
+  OUT -->|"relay"| TOPIC["topic video.segments<br/>partitioned by subject scope"]
+  TOPIC --> GROUP["consumer group<br/>va-projector"]
+  GROUP -->|"upsert"| PROJ
+  PROJ -->|"GET read"| UI["Analytics surface"]`;
+
+export const repairDiagramMobile = `flowchart TD
+  SEG["watch_segments<br/>append-only evidence"] --> PROJ["subject_progress<br/>mutable projection"]
+  PROJ --> CMP{"Compare the<br/>two paths"}
+  RECOMPUTE["recompute from<br/>raw evidence"] --> CMP
+  CMP -->|"delta = 0"| OK["Projection is correct"]
+  CMP -->|"delta != 0"| DRIFT["Drift detected"]
+  DRIFT --> AUDIT["Audit"]
+  AUDIT --> DRY["Dry run"]
+  DRY --> APPLY["Bounded apply"]
+  APPLY --> VERIFY["Verify delta = 0"]
   VERIFY --> OK`;
 
 export const clientDiagram = `stateDiagram-v2

@@ -33,7 +33,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { site } from "@/lib/site";
-import { clientDiagram, idempotencyDiagram, repairDiagram } from "@/lib/architecture-diagrams";
+import { clientDiagram, idempotencyDiagram, idempotencyDiagramMobile, repairDiagram, repairDiagramMobile } from "@/lib/architecture-diagrams";
 
 const invariants = [
   {
@@ -207,7 +207,7 @@ export function ArchitectureContent() {
                 </p>
 
                 <details className="group mt-6 border-t border-line pt-4">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
+                  <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
                     <span>How overlaps are counted</span>
                     <ChevronDown className="size-4 shrink-0 text-subtle-ink transition-transform group-open:rotate-180" />
                   </summary>
@@ -274,6 +274,7 @@ progress.uniqueContentSeconds =
             <Reveal className="mt-8">
               <MermaidDiagram
                 source={idempotencyDiagram}
+                mobileSource={idempotencyDiagramMobile}
                 label="Two layers of idempotency: request keys and segment identities"
                 caption="Request keys catch repeated batches. Segment identities catch the same evidence, even in a new session."
               />
@@ -289,7 +290,7 @@ progress.uniqueContentSeconds =
               </p>
 
               <details className="group mt-4 border-t border-line pt-4">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
                   <span>Replay details</span>
                   <ChevronDown className="size-4 shrink-0 text-subtle-ink transition-transform group-open:rotate-180" />
                 </summary>
@@ -318,7 +319,7 @@ progress.uniqueContentSeconds =
               </details>
 
               <details className="group mt-4 border-t border-line pt-4">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
                   <span>How the browser closes a segment</span>
                   <ChevronDown className="size-4 shrink-0 text-subtle-ink transition-transform group-open:rotate-180" />
                 </summary>
@@ -355,6 +356,8 @@ progress.uniqueContentSeconds =
             <Reveal className="mt-8">
               <MermaidDiagram
                 source={repairDiagram}
+                mobileSource={repairDiagramMobile}
+                compactBelow={1280}
                 label="Evidence and projection repair: audit, dry run, apply, and verify"
                 caption="Audit → preview changes → repair → verify. A successful repair leaves no difference."
               />
@@ -366,7 +369,7 @@ progress.uniqueContentSeconds =
                 resumable by cursor.
               </p>
               <details className="group mt-4 border-t border-line pt-4">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
                   <span>Paging and savepoints</span>
                   <ChevronDown className="size-4 shrink-0 text-subtle-ink transition-transform group-open:rotate-180" />
                 </summary>
@@ -451,7 +454,7 @@ progress.uniqueContentSeconds =
                       href={site.links.github}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1 font-medium text-green-deep underline-offset-2 hover:underline"
+                      className="inline-flex min-h-11 items-center gap-1 font-medium text-green-deep underline-offset-2 hover:underline"
                     >
                       Read the tests
                       <ArrowUpRight className="size-3.5" />
@@ -480,7 +483,7 @@ progress.uniqueContentSeconds =
 
             <Reveal className="mt-8 border-t border-line pt-4">
               <details className="group">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
                   <span>What the API does not do</span>
                   <ChevronDown className="size-4 shrink-0 text-subtle-ink transition-transform group-open:rotate-180" />
                 </summary>

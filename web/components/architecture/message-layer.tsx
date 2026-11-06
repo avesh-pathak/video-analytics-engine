@@ -2,7 +2,7 @@ import { ChevronDown } from "lucide-react";
 
 import { MermaidDiagram } from "@/components/architecture/mermaid-diagram";
 import { Reveal } from "@/components/marketing/reveal";
-import { systemDiagram } from "@/lib/architecture-diagrams";
+import { systemDiagram, systemDiagramMobile } from "@/lib/architecture-diagrams";
 
 const messageDetails = [
   {
@@ -48,6 +48,8 @@ export function MessageLayer() {
         <Reveal className="mt-8">
           <MermaidDiagram
             source={systemDiagram}
+            mobileSource={systemDiagramMobile}
+            compactBelow={1280}
             label="System architecture: playback, heartbeat API, evidence log, outbox, broker, and projection"
             caption="The full path from playback to stored totals. Subject-detail reads also compare the projection with raw evidence."
           />
@@ -55,7 +57,7 @@ export function MessageLayer() {
 
         <Reveal className="mt-6 border-t border-line pt-4">
           <details className="group">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
               <span>Message layer details</span>
               <ChevronDown className="size-4 shrink-0 text-subtle-ink transition-transform group-open:rotate-180" />
             </summary>

@@ -9,11 +9,15 @@ let renderQueue: Promise<unknown> = Promise.resolve();
 
 export function MermaidDiagram({
   source,
+  mobileSource,
+  compactBelow = 1024,
   label,
   caption,
   mobileFallback,
 }: {
   source: string;
+  mobileSource?: string;
+  compactBelow?: number;
   label: string;
   caption: string;
   mobileFallback?: React.ReactNode;
@@ -22,8 +26,20 @@ export function MermaidDiagram({
   const id = React.useId().replace(/[^a-zA-Z0-9]/g, "");
   const container = React.useRef<HTMLDivElement>(null);
   const [visible, setVisible] = React.useState(false);
+  const [compact, setCompact] = React.useState(false);
   const [result, setResult] = React.useState<{ theme: string; svg: string } | null>(null);
   const [failed, setFailed] = React.useState(false);
+
+  const activeSource = compact && mobileSource ? mobileSource : source;
+  const variant = compact && mobileSource ? "m" : "d";
+
+  React.useEffect(() => {
+    const query = window.matchMedia(`(max-width: ${compactBelow - 1}px)`);
+    const update = () => setCompact(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, [compactBelow]);
 
   React.useEffect(() => {
     const element = container.current;
@@ -46,6 +62,7 @@ export function MermaidDiagram({
     if (!visible || !resolvedTheme) return;
     let cancelled = false;
     setFailed(false);
+    setResult(null);
 
     const task = renderQueue.then(async () => {
       if (cancelled) return;
@@ -92,13 +109,13 @@ export function MermaidDiagram({
         sequence: { useMaxWidth: true },
         state: { useMaxWidth: true },
       });
-      const { svg } = await mermaid.render(`architecture${id}${resolvedTheme}`, source);
+      const { svg } = await mermaid.render(`architecture${id}${resolvedTheme}${variant}`, activeSource);
       if (!cancelled) setResult({ theme: resolvedTheme, svg });
     });
     renderQueue = task.catch(() => undefined);
     void task.catch(() => { if (!cancelled) setFailed(true); });
     return () => { cancelled = true; };
-  }, [id, resolvedTheme, source, visible]);
+  }, [activeSource, id, resolvedTheme, variant, visible]);
 
   const svg = result && result.theme === resolvedTheme ? result.svg : null;
 
@@ -122,7 +139,7 @@ export function MermaidDiagram({
       <figcaption className="border-t border-border px-5 py-4 text-xs leading-5 text-muted-foreground sm:px-6">
         {caption}
         <details className="mt-3">
-          <summary className="w-fit cursor-pointer font-medium text-primary">View Mermaid source</summary>
+          <summary className="flex min-h-11 w-fit cursor-pointer items-center font-medium text-primary">View Mermaid source</summary>
           <pre className="mt-3 overflow-x-auto rounded-xl bg-muted p-4 font-mono text-xs leading-6 text-muted-foreground">{source}</pre>
         </details>
       </figcaption>
