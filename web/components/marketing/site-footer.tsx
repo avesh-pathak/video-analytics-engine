@@ -14,6 +14,7 @@ const columns = [
 export function SiteFooter() {
   return (
     <footer className="relative mt-[120px] overflow-hidden rounded-t-[40px] border-t border-line gradient-footer">
+      <h2 className="sr-only">Site footer</h2>
       <div className="page-container pb-0 pt-14">
         <div className="flex flex-col justify-between gap-10 border-b border-line pb-12 lg:flex-row">
           <div className="max-w-[360px]">
@@ -40,12 +41,12 @@ export function SiteFooter() {
                   {column.links.map((link) => (
                     <li key={link.label}>
                       {link.href.startsWith("http") || link.href.startsWith("mailto") ? (
-                        <Link href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noreferrer" : undefined} className="group inline-flex items-center gap-1 text-sm text-muted-ink transition-colors hover:text-ink">
+                        <Link href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noreferrer" : undefined} className="group inline-flex items-center gap-1 text-sm text-muted-ink transition-colors hover:text-ink max-lg:min-h-11">
                           {link.label}
                           {link.href.startsWith("http") ? <ArrowUpRight className="size-3 text-subtle-ink transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" /> : null}
                         </Link>
                       ) : (
-                        <Link href={link.href} className="text-sm text-muted-ink transition-colors hover:text-ink">{link.label}</Link>
+                        <Link href={link.href} className="text-sm text-muted-ink transition-colors hover:text-ink max-lg:inline-flex max-lg:min-h-11 max-lg:items-center">{link.label}</Link>
                       )}
                     </li>
                   ))}
@@ -64,9 +65,9 @@ export function SiteFooter() {
             <span className="inline-flex max-w-full items-center rounded-full border border-line bg-card px-3 py-1.5 text-[11px] font-medium text-muted-ink">4 invariants · 2 layers · 0 trust in the client</span>
           </div>
           <div className="flex items-center gap-2">
-            <Link href={site.links.github} target="_blank" rel="noreferrer" aria-label="GitHub repository" className="grid size-9 place-items-center rounded-full border border-line bg-card text-body transition hover:-translate-y-px hover:bg-mint-soft hover:text-green-deep"><GithubIcon className="size-4" /></Link>
-            <Link href={site.links.linkedin} target="_blank" rel="noreferrer" aria-label="Avesh Pathak on LinkedIn" className="grid size-9 place-items-center rounded-full border border-line bg-card text-body transition hover:-translate-y-px hover:bg-mint-soft hover:text-green-deep"><LinkedinIcon className="size-4" /></Link>
-            <Link href={site.links.portfolio} target="_blank" rel="noreferrer" className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line bg-card px-3.5 text-xs font-semibold text-body transition hover:-translate-y-px hover:bg-mint-soft hover:text-green-deep">avesh.tech <ArrowUpRight className="size-3" /></Link>
+            <Link href={site.links.github} target="_blank" rel="noreferrer" aria-label="GitHub repository" className="grid size-11 place-items-center rounded-full border border-line bg-card text-body transition hover:-translate-y-px hover:bg-mint-soft hover:text-green-deep lg:size-9"><GithubIcon className="size-4" /></Link>
+            <Link href={site.links.linkedin} target="_blank" rel="noreferrer" aria-label="Avesh Pathak on LinkedIn" className="grid size-11 place-items-center rounded-full border border-line bg-card text-body transition hover:-translate-y-px hover:bg-mint-soft hover:text-green-deep lg:size-9"><LinkedinIcon className="size-4" /></Link>
+            <Link href={site.links.portfolio} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-1.5 rounded-full border border-line bg-card px-3.5 text-xs font-semibold text-body transition hover:-translate-y-px hover:bg-mint-soft hover:text-green-deep lg:h-9">avesh.tech <ArrowUpRight className="size-3" /></Link>
           </div>
         </div>
       </div>

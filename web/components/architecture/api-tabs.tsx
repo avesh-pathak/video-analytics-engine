@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Check, Copy } from "lucide-react";
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 type ApiTab = {
@@ -185,6 +185,7 @@ function CodePane({
       </div>
       <pre
         tabIndex={0}
+        role="region"
         aria-label={`${title} code. Scroll horizontally to read.`}
         className="max-w-full overflow-x-auto overscroll-x-contain p-4 font-mono text-xs leading-6 sm:text-[13px]"
       >
@@ -212,31 +213,33 @@ export function ApiTabs() {
   };
 
   return (
-    <div className="overflow-hidden rounded-card border border-line bg-card shadow-card">
+    <Tabs
+      value={active}
+      onValueChange={setActive}
+      className="gap-0 overflow-hidden rounded-card border border-line bg-card shadow-card"
+    >
       <div className="flex flex-col gap-3 border-b border-line-soft p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-        <Tabs value={active} onValueChange={setActive}>
-          <TabsList className="h-auto bg-surface-muted">
-            {tabs.map((item) => (
-              <TabsTrigger key={item.id} value={item.id} className="gap-2 text-sm">
-                <span
-                  className={cn(
-                    "rounded-full px-1.5 py-0.5 font-mono text-xs font-semibold",
-                    item.method === "POST"
-                      ? "bg-mint text-green-deep"
-                      : "bg-sky-soft/70 text-sky-ink",
-                  )}
-                >
-                  {item.method}
-                </span>
-                {item.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+        <TabsList className="h-auto bg-surface-muted">
+          {tabs.map((item) => (
+            <TabsTrigger key={item.id} value={item.id} className="gap-2 text-sm">
+              <span
+                className={cn(
+                  "rounded-full px-1.5 py-0.5 font-mono text-xs font-semibold",
+                  item.method === "POST"
+                    ? "bg-mint text-green-deep"
+                    : "bg-sky-soft/70 text-sky-ink",
+                )}
+              >
+                {item.method}
+              </span>
+              {item.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
         <button
           type="button"
           onClick={copy}
-          className="inline-flex min-h-10 items-center gap-1.5 self-start rounded-full border border-line bg-card px-3 py-1.5 text-sm font-medium text-muted-ink transition hover:bg-mint-soft sm:self-auto"
+          className="inline-flex min-h-11 items-center gap-1.5 self-start rounded-full border border-line bg-card px-3 py-1.5 text-sm font-medium text-muted-ink transition hover:bg-mint-soft sm:self-auto"
         >
           {copied ? <Check className="size-3.5 text-green" /> : <Copy className="size-3.5" />}
           {copied ? "Copied" : "Copy snippet"}
@@ -252,14 +255,18 @@ export function ApiTabs() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 bg-code text-code-foreground lg:grid-cols-2">
-        <CodePane
-          title="Request"
-          code={tab.request}
-          className="border-b border-white/10 lg:border-b-0 lg:border-r"
-        />
-        <CodePane title="Response" code={tab.response} />
-      </div>
+      {tabs.map((item) => (
+        <TabsContent key={item.id} value={item.id}>
+          <div className="grid grid-cols-1 bg-code text-code-foreground lg:grid-cols-2">
+            <CodePane
+              title="Request"
+              code={item.request}
+              className="border-b border-white/10 lg:border-b-0 lg:border-r"
+            />
+            <CodePane title="Response" code={item.response} />
+          </div>
+        </TabsContent>
+      ))}
 
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-line-soft px-4 py-3 text-xs text-subtle-ink sm:px-5">
         <span>At-least-once delivery · two independent idempotency guards</span>
@@ -268,6 +275,6 @@ export function ApiTabs() {
           Per-segment verdicts, not a single ok
         </span>
       </div>
-    </div>
+    </Tabs>
   );
 }

@@ -63,7 +63,7 @@ export function FinalCta() {
                     {copied ? "Copied" : "Copy code"}
                   </button>
                 </div>
-                <pre tabIndex={0} aria-label="Heartbeat request code; scroll horizontally to read" className="max-w-full overflow-x-auto overscroll-x-contain rounded-xl bg-card p-4 font-mono text-xs leading-6 text-body"><code>{snippet}</code></pre>
+                <pre tabIndex={0} role="region" aria-label="Heartbeat request code; scroll horizontally to read" className="max-w-full overflow-x-auto overscroll-x-contain rounded-xl bg-card p-4 font-mono text-xs leading-6 text-body"><code>{snippet}</code></pre>
                 <p role="status" className="mt-3 text-xs leading-5 text-muted-ink">{copyFailed ? "Copy unavailable. Select the code to copy it manually." : copied ? "Code copied to clipboard." : "Example request · not sent from this demo."}</p>
               </div>
             </details>
